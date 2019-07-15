@@ -1,45 +1,87 @@
 * {
   margin: 0;
   padding: 0;
+  text-align: center;
+  color:#0C090A;
 }
 
-/* html entities */
 body {
-  /*font grows 1px for every 100px of viewport width*/
   font-size: calc(1em + 1vw);
-  /* leading grows along with font, */
-  /* with an additional 0.1em + 0.5px per 100px of the viewport */
   line-height: calc(1.5em + 0.5vw);
   font-family: Molengo;
   width: 100vw;
   height: 100vh;
+  position: relative;
 }
 
 h1 {
   font-size: calc(1em + 10vw);
   line-height: 18vw;
-  text-align: center;
-  vertical-align: middle;
 }
 
-div.landing-page-wrapper {
-  height: 50%;
-}
-
-div.landing-menu-wrapper {
+.landing-menu-wrapper {
   height: 30vh;
 }
 
-div.lading-social-wrapper {
-  height: 10vh;
-  text-align: center;
+.lading-social-wrapper {
   font-size: calc(1.5em + 1.5vw);
 }
 
-@media (min-width: 50em) {
+.landing-footer-wrapper {
+  height: 5vh;
+  position: absolute;
+  bottom: 0;
+  right: 2vh;
+}
+
+.fa:hover {
+  cursor: pointer;
+}
+/* https://stackoverflow.com/questions/38507734/fontawesome-instagram-icon-colorized */
+/* fancy-smancy instagram */
+.fa.fa-instagram:hover {
+  color: transparent;
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  background: -webkit-radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+.fa.fa-youtube:hover {
+  color:#e52d27;
+}
+.fa.fa-facebook-square:hover {
+  color: #3b5998;
+}
+.fa.fa-linkedin:hover {
+  color:  #0976b4;
+}
+.fa.fa-twitter:hover {
+  color:#55acee;
+}
+.fa.fa-github:hover {
+  color: #333;
+}
+.fa.fa-reddit:hover {
+  color: #ff4500;
+}
+
+/* @media (min-width: 50em) {
   h1 {
     font-size: 12vw;
     line-height: 18vw;
-
   }
-}
+} */
