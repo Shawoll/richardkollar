@@ -1,0 +1,8 @@
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\bin\Debug\netstandard2.0\rchrdKOLLAR.Constants.deps.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\bin\Debug\netstandard2.0\rchrdKOLLAR.Constants.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\bin\Debug\netstandard2.0\rchrdKOLLAR.Constants.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\obj\Debug\netstandard2.0\rchrdKOLLAR.Constants.csproj.CoreCompileInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\obj\Debug\netstandard2.0\rchrdKOLLAR.Constants.AssemblyInfoInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\obj\Debug\netstandard2.0\rchrdKOLLAR.Constants.AssemblyInfo.cs
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\obj\Debug\netstandard2.0\rchrdKOLLAR.Constants.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.Constants\obj\Debug\netstandard2.0\rchrdKOLLAR.Constants.pdb

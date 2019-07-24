@@ -1,0 +1,11 @@
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Console.deps.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Console.runtimeconfig.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Console.runtimeconfig.dev.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Console.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Console.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\obj\Debug\netcoreapp2.2\rchrdKOLLAR.Console.csprojAssemblyReference.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\obj\Debug\netcoreapp2.2\rchrdKOLLAR.Console.csproj.CoreCompileInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\obj\Debug\netcoreapp2.2\rchrdKOLLAR.Console.AssemblyInfoInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\obj\Debug\netcoreapp2.2\rchrdKOLLAR.Console.AssemblyInfo.cs
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\obj\Debug\netcoreapp2.2\rchrdKOLLAR.Console.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\ConsoleApp1\obj\Debug\netcoreapp2.2\rchrdKOLLAR.Console.pdb

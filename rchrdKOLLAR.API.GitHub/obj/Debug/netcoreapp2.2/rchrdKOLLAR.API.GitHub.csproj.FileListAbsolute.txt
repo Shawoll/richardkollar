@@ -1,0 +1,17 @@
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.deps.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.runtimeconfig.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.runtimeconfig.dev.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.csprojAssemblyReference.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.csproj.CoreCompileInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.RazorAssemblyInfo.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.RazorAssemblyInfo.cs
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.AssemblyInfoInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.AssemblyInfo.cs
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.RazorTargetAssemblyInfo.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Constants.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Constants.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.API.GitHub.csproj.CopyComplete

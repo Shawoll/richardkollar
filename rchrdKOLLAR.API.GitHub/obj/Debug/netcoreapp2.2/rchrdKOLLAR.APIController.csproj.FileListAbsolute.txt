@@ -1,0 +1,17 @@
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.deps.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.runtimeconfig.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.runtimeconfig.dev.json
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Constants.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\bin\Debug\netcoreapp2.2\rchrdKOLLAR.Constants.pdb
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.csprojAssemblyReference.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.csproj.CoreCompileInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.RazorAssemblyInfo.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.RazorAssemblyInfo.cs
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.AssemblyInfoInputs.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.AssemblyInfo.cs
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.RazorTargetAssemblyInfo.cache
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.csproj.CopyComplete
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.dll
+C:\Users\0x00\source\repos\rchrdKOLLAR.API.GitHub\rchrdKOLLAR.API.GitHub\obj\Debug\netcoreapp2.2\rchrdKOLLAR.APIController.pdb
