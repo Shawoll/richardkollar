@@ -1,0 +1,119 @@
+﻿/* https://codepen.io/elishaterada/pen/tGokD */
+/* https://stackoverflow.com/questions/38507734/fontawesome-instagram-icon-colorized */
+/* fancy-smancy instagram */
+.fa {
+    cursor: pointer;
+}
+
+.fa:hover {
+    transition: 0.5s;
+    opacity: 1;
+}
+
+.fa.fa-instagram:hover {
+    color: transparent;
+    background: radial-gradient( circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90% );
+    background: -webkit-radial-gradient( circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90% );
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.fa.fa-google:hover {
+    color: #e52d27;
+}
+
+.fa.fa-youtube:hover {
+    color: #e52d27;
+}
+
+.fa.fa-facebook-square:hover {
+    color: #3b5998;
+}
+
+.fa.fa-linkedin:hover {
+    color: #0976b4;
+}
+
+.fa.fa-twitter:hover {
+    color: #55acee;
+}
+
+.fa.fa-github:hover {
+    color: #333;
+}
+
+.fa.fa-reddit:hover {
+    color: #ff4500;
+}
+
+.fa.fa-spotify:hover {
+    color: #7ab800;
+}
+/* todo change colors */
+.fa.fa-quora:hover {
+    color: #ff4500;
+}
+
+.fa.fa-gitlab:hover {
+    color: #7ab800;
+}
+
+.fa.fa-bitbucket:hover {
+    color: #3b5998;
+}
+
+/*divider*/ 
+
+* {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #fafffd;
+    background: #342e37;
+}
+
+body,
+html {
+    font-size: calc(1em + 1vw);
+    line-height: calc(1.5em + 1.5vw);
+    font-family: Molengo;
+    position: relative;
+}
+
+h1 {
+    font-size: calc(1em + 1vw);
+    line-height: 18vw;
+    word-break: break-all;
+    display: block;
+}
+
+    h1 > b {
+        color: #54DDA6;
+    }
+
+.landing-menu-wrapper {
+    height: 30vh;
+}
+
+.lading-social-wrapper {
+    font-size: calc(1em + 1vw);
+}
+
+@media screen and (min-width: 61vw) {
+    h1 {
+        font-size: calc(1em + 10vw);
+    }
+
+    .lading-social-wrapper {
+        word-break: break-all;
+        line-height: 5vh;
+    }
+}
+
+@media screen and (max-width: 60vw) {
+    h1 {
+        font-size: calc(1em + 1vw);
+    }
+}
+
+
