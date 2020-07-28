@@ -12,7 +12,7 @@ body {
   line-height: calc(1.5em + 0.5vw);
   font-family: Molengo;
   width: 100vw;
-  height: 100vh;
+  height: 60vh;
   overflow-y: hidden; // hide vertical
 }
 
