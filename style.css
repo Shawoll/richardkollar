@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* html entities */
+body {
+  /*font grows 1px for every 100px of viewport width*/
+  font-size: calc(1em + 1vw);
+  /* leading grows along with font, */
+  /* with an additional 0.1em + 0.5px per 100px of the viewport */
+  line-height: calc(1.5em + 0.5vw);
+  font-family: Molengo;
+  width: 100vw;
+  height: 100vh;
+}
+
+h1 {
+  font-size: calc(1em + 10vw);
+  line-height: 18vw;
+  text-align: center;
+  vertical-align: middle;
+}
+
+div.landing-page-wrapper {
+  height: 50%;
+}
+
+div.landing-menu-wrapper {
+  height: 30vh;
+}
+
+div.lading-social-wrapper {
+  height: 10vh;
+  text-align: center;
+  font-size: calc(1.5em + 1.5vw);
+}
+
+@media (min-width: 50em) {
+  h1 {
+    font-size: 12vw;
+    line-height: 18vw;
+
+  }
+}
