@@ -23,15 +23,15 @@ h1 {
   vertical-align: middle;
 }
 
-div.landing-page-wrapper {
+.landing-page-wrapper {
   height: 50%;
 }
 
-div.landing-menu-wrapper {
+.landing-menu-wrapper {
   height: 30vh;
 }
 
-div.lading-social-wrapper {
+.lading-social-wrapper {
   height: 10vh;
   text-align: center;
   font-size: calc(1.5em + 1.5vw);
