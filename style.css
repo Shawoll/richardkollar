@@ -5,6 +5,7 @@
 
 /* html entities */
 body {
+  background-color: black;
   /*font grows 1px for every 100px of viewport width*/
   font-size: calc(1em + 1vw);
   /* leading grows along with font, */
@@ -13,6 +14,7 @@ body {
   font-family: Molengo;
   width: 100vw;
   height: 60vh;
+  color: white;
   overflow-y: hidden; // hide vertical\
           -webkit-touch-callout: none; /* iOS Safari */
           -webkit-user-select: none; /* Safari */
@@ -27,6 +29,7 @@ h1 {
   line-height: 18vw;
   text-align: center;
   vertical-align: middle;
+  color: white;
 }
 
 .landing-page-wrapper {
