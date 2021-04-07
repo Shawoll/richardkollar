@@ -5,7 +5,7 @@
 
 /* html entities */
 body {
-  background-color: black;
+  background-color: #2d333b;
   /*font grows 1px for every 100px of viewport width*/
   font-size: calc(1em + 1vw);
   /* leading grows along with font, */
