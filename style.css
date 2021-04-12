@@ -11,7 +11,7 @@ body {
   /* leading grows along with font, */
   /* with an additional 0.1em + 0.5px per 100px of the viewport */
   line-height: calc(1.5em + 0.5vw);
-  font-family: Molengo;
+  /*font-family: Molengo;*/
   width: 100vw;
   height: 60vh;
   color: white;
