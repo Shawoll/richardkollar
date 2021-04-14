@@ -44,6 +44,7 @@ h1 {
   height: 10vh;
   text-align: center;
   font-size: calc(1.5em + 1.5vw);
+  color: white;
 }
 
 @media (min-width: 50em) {
