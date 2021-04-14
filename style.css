@@ -54,3 +54,9 @@ h1 {
 
   }
 }
+
+.logo {
+  background-color: white;
+  -webkit-mask: url(stackoverflow.svg) no-repeat center;
+  mask: url(stackoverflow.svg) no-repeat center;
+}
