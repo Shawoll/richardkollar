@@ -1,67 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
   <title>richardkollar.sk</title>
   <style>
-    
     * {
       margin: 0;
       padding: 0;
-      outline: 1px solid red;
-    } 
-    
-    .grid-container {
-      display: grid;
-      grid-template-columns: auto auto auto auto;
-/*       align-content: center; */
-      grid-gap: 10px;
-      background-color: #2196F3;
-      padding: 10px;
+      /* outline: 2px solid red; */
     }
-    
-    .content-box > div {
-      column-count: 3;
-      background-color: rgba(255, 255, 255, 0.8);
-      text-align: center;
-      padding: 20px 0;
-      font-size: 30px;
+
+    html {
+      height: 100vh;
+      bottom: 0;
+      font-weight: bold;
     }
-    
+
+    header {
+      height: 10vh;
+      background: deepskyblue;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    footer {
+      height: 10vh;
+      background: lightgreen;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      /* justify-content: space-evenly; */
+      justify-content: space-around;
+
+      align-items: stretch;
+      flex-flow: row wrap;
+      height: 80vh;
+      list-style: none;
+    }
+
+    .flex-container>div {
+      width: 20%;
+      justify-content: center;
+      display: flex;
+      padding-top: 10vh;
+    }
+
+    .twitter-container {
+      background-color: #1DA1F2;
+    }
+
+    .github-container {
+      background-color: #333;
+    }
+
+    .linkedin-container {
+      background-color: #0072b1;
+    }
+
+    .stackoverflow-container {
+      background-color: #ef8236;
+    }
+
+    /* .flex-container > * {
+      flex: 1 100%;
+    } */
+
+    .flex-item {
+      background: tomato;
+      width: 20%;
+    }
+
+
+    @media all and (max-width: 600px) {
+      
+    }
+
   </style>
+
 </head>
- 
+
 <body>
-  <div class="grid-container">
-    <section>
-      <header>
-        <section>
-          <h1>richardkollar</h1>
-        </section>
-      </header>
-      <section>
-        <div class="content-box">
-          <div>
-            <img src="twitter.svg" width="50" height="50" alt="Twitter" />
-          </div>
-          <div>
-            <img src="github.svg" width="50" height="50" alt="GitHub" />
-          </div>
-          <div>
-            <img src="linkedin.svg" width="50" height="50" alt="LinkedIn" />
-          </div>
-          <div>
-            <img src="stackoverflow.svg" width="50" height="50" alt="StackOverlow" /> 
-          </div>
-        </div>
-      </section>
-      <footer>
-        <span>2021</span>
-      </footer>
-    </section>
+
+  <header>
+    <h1>richardkollar</h1>
+  </header>
+
+  <div class="flex-container">
+    <div class="twitter-container">
+      <img src="twitter.svg" width="50" height="50" alt="Twitter" />
+    </div>
+    <div class="github-container">
+      <img src="github.svg" width="50" height="50" alt="GitHub" />
+    </div>
+    <div class="linkedin-container">
+      <img src="linkedin.svg" width="50" height="50" alt="LinkedIn" />
+    </div>
+    <div class="stackoverflow-container">
+      <img src="stackoverflow.svg" width="50" height="50" alt="StackOverlow" />
+    </div>
   </div>
+
+  <footer>
+    <span>Richard Kollar 2021</span>
+  </footer>
+
 </body>
 
 <!-- Twitter       : Number of tweets, connections, followers, following -->
