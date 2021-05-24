@@ -84,16 +84,17 @@
 
     @media all and (max-width: 600px) {
       .flex-container {
-        flex-flow: column wrap;
+/*         flex-flow: column wrap; */
+        flex-direction: inherit;
         padding: 0;
       }
       
-          .flex-container>div {
-      width: 100%;
-      justify-content: center;
-      display: flex;
-      padding-top: 10vh;
-    }
+      .flex-container > div {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        padding-top: 10vh;
+      }
     }
 
   </style>
