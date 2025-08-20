@@ -173,7 +173,7 @@ function renderSVG(cfg){
   // arc text via textPath
   // viewBox 800x800 for crisp export
   return `
-  <svg id="shirtSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+    <svg id="shirtSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 860" preserveAspectRatio="xMidYMid meet">
     <defs>
       <filter id="grain"><feTurbulence baseFrequency="0.65" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
       <path id="arcTop" d="M120,390 A280,280 0 0 1 680,390" />
@@ -181,7 +181,7 @@ function renderSVG(cfg){
       <clipPath id="crestClip"><path d="${crest}"/></clipPath>
     </defs>
 
-    <rect width="100%" height="80%" fill="#0a0f1e"/>
+    <rect width="800" height="860" fill="#0a0f1e"/>
     <g transform="translate(400,400)">
       <g transform="translate(-400,-400)">
         <path d="${crest}" fill="${primary}" stroke="${light}" stroke-width="12"/>
