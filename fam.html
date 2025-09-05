@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Shoe Pairing • Welcome to the Family</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <style>
+    :root{
+      --bg:#0e0f13; --card:#151823cc; --muted:#9aa3af; --accent:#6ee7ff; --ok:#34d399; --err:#ef4444; --ring:#6ee7ff55;
+      --text:#e5e7eb; --text-strong:#f9fafb;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      color:var(--text); background:radial-gradient(1200px 800px at 80% -10%, #1e2636 0%, #0e0f13 55%) fixed;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .app{
+      width:min(920px,100%); display:grid; gap:16px;
+    }
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .brand{font-weight:700; letter-spacing:.4px; color:var(--text-strong)}
+    .tag{font-size:12px; color:var(--muted)}
+    .card{
+      background:var(--card); border:1px solid #ffffff10; border-radius:16px; padding:18px;
+      backdrop-filter: blur(8px); box-shadow:0 10px 30px #00000070;
+    }
+    .hero{
+      display:grid; gap:8px; text-align:center; padding:6px 8px 2px;
+    }
+    h1{margin:.2em 0 .1em; font-size:28px; letter-spacing:.2px; color:var(--text-strong)}
+    p.lead{margin:.2em 0 0; color:var(--muted)}
+    .grid{display:grid; gap:16px}
+    @media(min-width:860px){ .grid{grid-template-columns:1.25fr .75fr} }
+    .controls{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:10px}
+    button,.ghost{
+      appearance:none; border:1px solid #ffffff20; background:#1b1f2b; color:var(--text);
+      padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:600;
+      transition:transform .05s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    button:hover{border-color:#ffffff30}
+    button:active{transform:translateY(1px)}
+    button.primary{background:linear-gradient(180deg,#1f2a44,#172033); border-color:#6ee7ff33; box-shadow:0 0 0 0 transparent}
+    button.primary:focus{outline:none; box-shadow:0 0 0 6px var(--ring)}
+    .status{
+      display:grid; gap:12px; align-content:start;
+    }
+    .row{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; background:#0f1220; border-radius:12px; border:1px solid #ffffff0f}
+    .row b{color:var(--text-strong)}
+    .ok{color:var(--ok)} .err{color:var(--err)} .muted{color:var(--muted)}
+    .video-wrap{position:relative; border-radius:16px; overflow:hidden; background:#0a0c14; border:1px solid #ffffff14}
+    video{width:100%; height:auto; display:block; background:#000}
+    canvas.scan{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; mix-blend-mode:screen; opacity:.9}
+    .hidden{display:none !important}
+    .field{display:flex; gap:8px}
+    input[type=text]{
+      flex:1; background:#0d1220; color:var(--text); border:1px solid #ffffff1a; border-radius:12px; padding:12px 14px;
+    }
+    .toast{border-left:4px solid var(--accent); background:#0c1320; padding:12px 14px; border-radius:12px; color:var(--muted)}
+    .celebrate{
+      text-align:center; padding:18px; border:1px dashed #6ee7ff44; border-radius:16px; background:#0b111d;
+    }
+    .celebrate h2{margin:.2em 0 .2em; font-size:24px}
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; border:1px solid #ffffff1a; background:#0c1221; color:var(--muted); font-size:12px}
+    .pair-card{
+      display:grid; gap:8px; padding:12px; background:#0c1221; border:1px solid #ffffff12; border-radius:12px; text-align:left; width:max(260px, 60%); margin:12px auto 0;
+    }
+    footer{opacity:.7; font-size:12px; text-align:center; margin-top:8px}
+    #confetti{position:fixed; inset:0; pointer-events:none}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <canvas id="confetti" class="hidden"></canvas>
+
+  <div class="app" role="application" aria-describedby="ariaStatus">
+    <header>
+      <div>
+        <div class="brand">Bare Family</div>
+        <div class="tag">Smart pairing for your barefoot shoes</div>
+      </div>
+      <span class="badge" aria-hidden="true">Secure • Private • Local</span>
+    </header>
+
+    <section class="card hero">
+      <h1>Pair your shoes</h1>
+      <p class="lead">Scan <b>Left</b> then <b>Right</b>. We’ll validate and welcome you in.</p>
+      <div class="controls">
+        <button class="primary" id="scanLeftBtn">Scan Left</button>
+        <button class="primary" id="scanRightBtn" disabled>Scan Right</button>
+        <button id="demoBtn" title="Try without a camera">Try Demo</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+      </div>
+      <div class="controls">
+        <div class="field" style="width:min(680px,100%)">
+          <input id="manualInput" type="text" placeholder='Or paste QR content, e.g. {"pairId":"ABC123","side":"L"} or BL-PAIR-ABC123-L' inputmode="text" aria-label="Manual QR content">
+          <button id="manualLeft">Use as Left</button>
+          <button id="manualRight">Use as Right</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card video-wrap hidden" id="scannerCard" aria-live="polite">
+        <video id="video" playsinline></video>
+        <canvas id="overlay" class="scan"></canvas>
+      </div>
+
+      <div class="card status" aria-live="polite" aria-atomic="true">
+        <div class="row"><span>Pair ID</span><b id="pairId" class="muted">—</b></div>
+        <div class="row"><span>Model</span><b id="model" class="muted">—</b></div>
+        <div class="row"><span>Size</span><b id="size" class="muted">—</b></div>
+        <div class="row"><span>Left</span><b id="leftVal" class="muted">not set</b></div>
+        <div class="row"><span>Right</span><b id="rightVal" class="muted">not set</b></div>
+        <div id="toast" class="toast hidden"></div>
+
+        <div id="celebrate" class="celebrate hidden" role="status">
+          <h2>Welcome to the family! 🥳</h2>
+          <div class="pair-card" id="pairCard">
+            <div><b>Pair</b> <span id="pairCardId" class="muted">—</span></div>
+            <div><b>Model</b> <span id="pairCardModel" class="muted">—</span></div>
+            <div><b>Size</b> <span id="pairCardSize" class="muted">—</span></div>
+            <div><b>Registered</b> <span id="pairCardDate" class="muted">—</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>Data stays on this device. You can bring this into React later with the same flow.</footer>
+
+    <div id="ariaStatus" class="sr-only" aria-live="polite"></div>
+  </div>
+
+  <!-- Fallback QR library (only used if BarcodeDetector is unavailable) -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+  (() => {
+    const $ = sel => document.querySelector(sel);
+    const els = {
+      scanLeftBtn:  $('#scanLeftBtn'),
+      scanRightBtn: $('#scanRightBtn'),
+      resetBtn:     $('#resetBtn'),
+      demoBtn:      $('#demoBtn'),
+      manualInput:  $('#manualInput'),
+      manualLeft:   $('#manualLeft'),
+      manualRight:  $('#manualRight'),
+      scannerCard:  $('#scannerCard'),
+      video:        $('#video'),
+      overlay:      $('#overlay'),
+      toast:        $('#toast'),
+      celebrate:    $('#celebrate'),
+      pairId:       $('#pairId'),
+      model:        $('#model'),
+      size:         $('#size'),
+      leftVal:      $('#leftVal'),
+      rightVal:     $('#rightVal'),
+      confetti:     $('#confetti'),
+      pairCardId:   $('#pairCardId'),
+      pairCardModel:$('#pairCardModel'),
+      pairCardSize: $('#pairCardSize'),
+      pairCardDate: $('#pairCardDate'),
+      ariaStatus:   $('#ariaStatus'),
+    };
+
+    const state = {
+      left: null,  // parsed QR object for Left
+      right: null, // parsed QR object for Right
+      pairMeta: null, // {pairId, model?, size?}
+      scanning: false,
+      targetSide: null, // 'L' or 'R'
+      stream: null,
+      detector: null,
+      raf: null,
+      usingFallback: false,
+    };
+
+    // ---------- Utilities ----------
+    const speak = (msg) => els.ariaStatus.textContent = msg;
+    const vibrate = (pattern=[60,20,60]) => navigator.vibrate?.(pattern);
+
+    const setToast = (msg, kind='info') => {
+      els.toast.textContent = msg;
+      els.toast.classList.remove('hidden');
+      els.toast.style.borderLeftColor = kind === 'error' ? 'var(--err)' : (kind === 'ok' ? 'var(--ok)' : 'var(--accent)');
+      if (kind === 'error') els.toast.style.background = '#190f13';
+      if (kind === 'ok') els.toast.style.background = '#0f1913';
+      if (kind === 'info') els.toast.style.background = '#0c1320';
+      window.clearTimeout(setToast._t);
+      setToast._t = window.setTimeout(() => els.toast.classList.add('hidden'), 3500);
+    };
+
+    const updateStatus = () => {
+      const pid = state.pairMeta?.pairId ?? '—';
+      const model = state.pairMeta?.model ?? '—';
+      const size = state.pairMeta?.size ?? '—';
+      els.pairId.textContent = pid;
+      els.model.textContent = model;
+      els.size.textContent = size;
+
+      els.leftVal.textContent = state.left ? summary(state.left) : 'not set';
+      els.leftVal.className = state.left ? 'ok' : 'muted';
+      els.rightVal.textContent = state.right ? summary(state.right) : 'not set';
+      els.rightVal.className = state.right ? 'ok' : 'muted';
+
+      els.scanRightBtn.disabled = !state.left; // enforce flow: Left then Right
+
+      if (state.left && state.right) finishPair();
+    };
+
+    const summary = o => `${o.side} • ${o.pairId}${o.size? ' • ' + o.size : ''}`;
+
+    const parseQR = (raw) => {
+      // Accept JSON or plain formats
+      let obj = null;
+      try {
+        const j = JSON.parse(raw);
+        if (j && j.pairId && j.side) obj = {
+          pairId: String(j.pairId).trim(),
+          side: String(j.side).toUpperCase()==='RIGHT'?'R':String(j.side).toUpperCase()==='LEFT'?'L':String(j.side).toUpperCase(),
+          model: j.model ? String(j.model) : undefined,
+          size: j.size ? String(j.size) : undefined,
+          raw
+        };
+      } catch(_) {}
+      if (!obj) {
+        // BL-PAIR-ABC123-L;model=Urban Nomad;size=42  OR  BL-PAIR-ABC123-L
+        const [main, ...kv] = String(raw).trim().split(';');
+        const m = main.match(/(?:^| )BL-PAIR-([A-Z0-9\-]+)-([LR])$/i);
+        if (m) {
+          obj = { pairId: m[1].toUpperCase(), side: m[2].toUpperCase(), raw };
+          for (const part of kv) {
+            const [k,v] = part.split('=');
+            if (!k || !v) continue;
+            if (k.toLowerCase()==='model') obj.model = v;
+            if (k.toLowerCase()==='size') obj.size = v;
+          }
+        }
+      }
+      return obj;
+    };
+
+    const ensureMeta = (o) => {
+      if (!o) return;
+      if (!state.pairMeta) {
+        state.pairMeta = { pairId: o.pairId, model: o.model, size: o.size };
+      } else {
+        // Fill missing bits
+        state.pairMeta.model ??= o.model;
+        state.pairMeta.size ??= o.size;
+      }
+    };
+
+    const loadDetector = () => {
+      if ('BarcodeDetector' in window) {
+        try {
+          state.detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+          return true;
+        } catch(_){}
+      }
+      state.detector = null;
+      return false;
+    };
+
+    const startScan = async (side) => {
+      if (state.scanning) return;
+      state.targetSide = side;
+      state.scanning = true;
+      els.scannerCard.classList.remove('hidden');
+      els.video.setAttribute('aria-label', `Scanning for ${side === 'L' ? 'Left' : 'Right'} shoe QR`);
+      speak(`Scanner opened for ${side === 'L' ? 'Left' : 'Right'}`);
+
+      try {
+        state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }});
+        els.video.srcObject = state.stream;
+        await els.video.play();
+
+        const haveNative = loadDetector();
+        state.usingFallback = !haveNative;
+
+        haveNative ? tickNative() : tickFallback();
+      } catch (err) {
+        console.error(err);
+        setToast('Camera not available. Use manual entry or demo.', 'error');
+        stopScan();
+      }
+    };
+
+    const stopScan = () => {
+      if (state.raf) cancelAnimationFrame(state.raf);
+      state.raf = null;
+      if (state.stream) {
+        for (const t of state.stream.getTracks()) t.stop();
+      }
+      state.stream = null;
+      state.scanning = false;
+      els.scannerCard.classList.add('hidden');
+      const ctx = els.overlay.getContext('2d');
+      ctx && ctx.clearRect(0,0,els.overlay.width, els.overlay.height);
+    };
+
+    const handleResult = (text) => {
+      const parsed = parseQR(text);
+      if (!parsed) { setToast('Unrecognized QR content.', 'error'); vibrate([120]); return; }
+
+      if (parsed.side !== state.targetSide) {
+        setToast(`Scanned a "${parsed.side}" but expected "${state.targetSide}".`, 'error');
+        vibrate([200,60,200]);
+        return;
+      }
+      if (state.left && parsed.pairId !== state.left.pairId) {
+        setToast('This code belongs to a different pair.', 'error'); vibrate([180,40,180]); return;
+      }
+      if (state.right && parsed.pairId !== state.right.pairId) {
+        setToast('This code belongs to a different pair.', 'error'); vibrate([180,40,180]); return;
+      }
+      if (isAlreadyRegistered(parsed.pairId)) {
+        setToast('This pair is already registered on this device.', 'error'); vibrate([180,60,180]); return;
+      }
+
+      ensureMeta(parsed);
+      if (parsed.side === 'L') state.left = parsed;
+      if (parsed.side === 'R') state.right = parsed;
+
+      updateStatus();
+      setToast(`${parsed.side === 'L' ? 'Left' : 'Right'} scanned ✓`, 'ok');
+      vibrate([40,30,40]);
+
+      stopScan();
+    };
+
+    const isAlreadyRegistered = (pairId) => {
+      const list = JSON.parse(localStorage.getItem('shoePairs') || '[]');
+      return list.some(x => x.pairId === pairId);
+    };
+
+    const saveRegistration = () => {
+      const entry = {
+        pairId: state.pairMeta?.pairId,
+        model: state.pairMeta?.model || null,
+        size: state.pairMeta?.size || null,
+        leftRaw: state.left?.raw || null,
+        rightRaw: state.right?.raw || null,
+        registeredAt: new Date().toISOString()
+      };
+      const list = JSON.parse(localStorage.getItem('shoePairs') || '[]');
+      list.push(entry);
+      localStorage.setItem('shoePairs', JSON.stringify(list));
+      return entry;
+    };
+
+    const finishPair = () => {
+      const entry = saveRegistration();
+      els.pairCardId.textContent = entry.pairId || '—';
+      els.pairCardModel.textContent = entry.model || '—';
+      els.pairCardSize.textContent = entry.size || '—';
+      els.pairCardDate.textContent = new Date(entry.registeredAt).toLocaleString();
+      els.celebrate.classList.remove('hidden');
+      fireConfetti();
+      speak('Pair completed. Welcome to the family.');
+      vibrate([30, 50, 150, 50, 30]);
+    };
+
+    // ---------- Scanning Loops ----------
+    const tickNative = async () => {
+      const draw = overlayDrawer();
+      const loop = async () => {
+        if (!state.scanning || !state.detector) return;
+        try{
+          const barcodes = await state.detector.detect(els.video);
+          if (barcodes?.length) {
+            const best = barcodes[0];
+            draw(best.boundingBox);
+            handleResult(best.rawValue);
+            return;
+          }
+        } catch(e){ console.warn('Detector failed; switching to fallback', e); state.detector=null; state.usingFallback=true; tickFallback(); return; }
+        state.raf = requestAnimationFrame(loop);
+      };
+      loop();
+    };
+
+    const tickFallback = () => {
+      const v = els.video;
+      const canvas = els.overlay;
+      const ctx = canvas.getContext('2d');
+      const scale = window.devicePixelRatio || 1;
+      const loop = () => {
+        if (!state.scanning || !v.videoWidth) return;
+        canvas.width = v.clientWidth * scale;
+        canvas.height = v.clientHeight * scale;
+
+        // Draw current frame into an offscreen canvas scaled to video frame
+        const off = document.createElement('canvas');
+        off.width = v.videoWidth;
+        off.height = v.videoHeight;
+        const octx = off.getContext('2d');
+        octx.drawImage(v, 0, 0, off.width, off.height);
+        const img = octx.getImageData(0,0,off.width,off.height);
+        if (window.jsQR) {
+          const code = jsQR(img.data, off.width, off.height, { inversionAttempts: "attemptBoth" });
+          if (code && code.data) {
+            drawPoly(ctx, code.location);
+            handleResult(code.data);
+            return;
+          }
+        }
+        state.raf = requestAnimationFrame(loop);
+      };
+      state.raf = requestAnimationFrame(loop);
+    };
+
+    const overlayDrawer = () => {
+      const ctx = els.overlay.getContext('2d');
+      return (bbox) => {
+        if (!bbox) return;
+        const rect = els.video.getBoundingClientRect();
+        const scaleX = els.overlay.width / rect.width;
+        const scaleY = els.overlay.height / rect.height;
+        ctx.clearRect(0,0,els.overlay.width, els.overlay.height);
+        ctx.strokeStyle = 'rgba(110,231,255,.95)';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(
+          (bbox.x) * scaleX,
+          (bbox.y) * scaleY,
+          bbox.width * scaleX,
+          bbox.height * scaleY
+        );
+      };
+    };
+
+    const drawPoly = (ctx, loc) => {
+      ctx.clearRect(0,0,els.overlay.width, els.overlay.height);
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = 'rgba(110,231,255,.95)';
+      ctx.beginPath();
+      ctx.moveTo(loc.topLeftCorner.x, loc.topLeftCorner.y);
+      ctx.lineTo(loc.topRightCorner.x, loc.topRightCorner.y);
+      ctx.lineTo(loc.bottomRightCorner.x, loc.bottomRightCorner.y);
+      ctx.lineTo(loc.bottomLeftCorner.x, loc.bottomLeftCorner.y);
+      ctx.closePath();
+      ctx.stroke();
+    };
+
+    // ---------- Confetti ----------
+    function fireConfetti(duration=2200, count=140) {
+      const c = els.confetti;
+      c.classList.remove('hidden');
+      const ctx = c.getContext('2d');
+      const DPR = window.devicePixelRatio || 1;
+      const resize = () => { c.width = innerWidth * DPR; c.height = innerHeight * DPR; };
+      resize(); window.addEventListener('resize', resize, { once:true });
+
+      const parts = Array.from({length:count}, () => ({
+        x: Math.random()*c.width, y: -20, w: 6 + Math.random()*10, h: 8 + Math.random()*14,
+        vx: -2 + Math.random()*4, vy: 4 + Math.random()*6, rot: Math.random()*360, vr: -6+Math.random()*12,
+        alpha: .9, life: duration + Math.random()*600
+      }));
+
+      const start = performance.now();
+      const step = (t) => {
+        const dt = 16;
+        ctx.clearRect(0,0,c.width,c.height);
+        parts.forEach(p => {
+          p.x += p.vx; p.y += p.vy; p.vy += .1; p.rot += p.vr; p.life -= dt;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI/180);
+          ctx.globalAlpha = Math.max(0, Math.min(.9, p.life/duration));
+          ctx.fillStyle = ['#6ee7ff','#34d399','#a78bfa','#f472b6','#f59e0b'][p.rot|0 % 5];
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          ctx.restore();
+        });
+        if (t - start < duration) requestAnimationFrame(step);
+        else c.classList.add('hidden');
+      };
+      requestAnimationFrame(step);
+    }
+
+    // ---------- Events ----------
+    els.scanLeftBtn.addEventListener('click', () => startScan('L'));
+    els.scanRightBtn.addEventListener('click', () => startScan('R'));
+    els.resetBtn.addEventListener('click', () => { Object.assign(state, {left:null,right:null,pairMeta:null}); updateStatus(); els.celebrate.classList.add('hidden'); setToast('Reset.', 'info'); });
+    els.demoBtn.addEventListener('click', () => {
+      // Demo pair (Left then Right)
+      const left = '{"pairId":"NOMAD-8842","side":"L","model":"Urban Nomad","size":"42"}';
+      const right = '{"pairId":"NOMAD-8842","side":"R","model":"Urban Nomad","size":"42"}';
+      els.manualInput.value = left; applyManual('L');
+      setTimeout(() => { els.manualInput.value = right; applyManual('R'); }, 500);
+    });
+    els.manualLeft.addEventListener('click', () => applyManual('L'));
+    els.manualRight.addEventListener('click', () => applyManual('R'));
+
+    function applyManual(side){
+      const val = els.manualInput.value.trim();
+      if (!val) return setToast('Paste QR content first.', 'info');
+      state.targetSide = side; // for validation
+      handleResult(val);
+    }
+
+    // init
+    updateStatus();
+  })();
+  </script>
+</body>
+</html>
