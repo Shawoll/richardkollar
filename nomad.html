@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NOMAD — Urban Barefoot Sneaker Concept</title>
+  <meta name="description" content="NOMAD — an adaptive barefoot sneaker for the urban wanderer. Minimal. Bold. Functional.">
+  <style>
+    /* =======================
+       Design Tokens
+    ======================== */
+    :root{
+      --bg:#0e0f12;
+      --fg:#e9eef5;
+      --muted:#98a2b3;
+      --accent:#8AF21E;             /* neon vibe */
+      --accent-2:#2de1fc;           /* subtle cyan for depth */
+      --panel:#15171c;
+      --grid:#1b1e24;
+      --maxw:1200px;
+      --radius:16px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f7f9fb; --fg:#0c0d10; --muted:#596270; --panel:#ffffff; --grid:#e9edf3; }
+      body{ background-image: none; }
+    }
+
+    /* =======================
+       Base
+    ======================== */
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    html{ scroll-behavior:smooth }
+    body{
+      margin:0; color:var(--fg); background:radial-gradient(1200px 800px at 80% -10%, #1b1f26 0%, var(--bg) 45%) fixed, var(--bg);
+      font:16px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+      overflow-x:hidden;
+    }
+    a{ color:inherit; text-decoration:none }
+    .container{ width:100%; max-width:var(--maxw); margin:0 auto; padding:0 24px }
+    .grid-bg{
+      background:
+        linear-gradient(transparent 95%, rgba(255,255,255,.05) 95%) 0 0/24px 24px,
+        linear-gradient(90deg, transparent 95%, rgba(255,255,255,.05) 95%) 0 0/24px 24px;
+      mask-image: radial-gradient(1000px 600px at 80% -10%, rgba(0,0,0,.45), rgba(0,0,0,0.0) 70%);
+      pointer-events:none; position:fixed; inset:0; z-index:0;
+    }
+
+    /* =======================
+       Header
+    ======================== */
+    header{
+      position:fixed; inset:0 0 auto 0; height:72px; z-index:10;
+      backdrop-filter:saturate(180%) blur(10px);
+      background:color-mix(in oklab, var(--bg) 92%, black 8%);
+      border-bottom:1px solid color-mix(in oklab, var(--grid) 85%, black 15%);
+    }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.06em }
+    .brand-mark{
+      width:28px; height:28px; border-radius:8px; background:
+      conic-gradient(from 0deg at 50% 50%, var(--accent), var(--accent-2), var(--accent));
+      filter:brightness(1.15);
+    }
+    nav{ display:flex; align-items:center; gap:22px }
+    header .container{
+      height:100%; display:flex; align-items:center; justify-content:space-between;
+    }
+    .cta{
+      padding:10px 16px; border-radius:999px; font-weight:600;
+      background:linear-gradient(120deg, color-mix(in oklab, var(--accent) 85%, white 15%), color-mix(in oklab, var(--accent-2) 65%, white 35%));
+      color:#0b1014; box-shadow:var(--shadow); border:none; cursor:pointer;
+    }
+
+    /* =======================
+       Sections
+    ======================== */
+    section{ position:relative; z-index:1 }
+    .hero{
+      min-height:100svh; display:grid; place-items:center; text-align:center; padding-top:72px;
+    }
+    .hero h1{
+      font-size: clamp(48px, 8vw, 140px);
+      line-height:.9; margin:.1em 0 .25em; letter-spacing:.02em;
+      font-weight:900; text-transform:uppercase;
+      background:linear-gradient(180deg, #fff, color-mix(in oklab, var(--fg) 75%, #7c7c7c 25%));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .hero .tag{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:8px 14px; border-radius:999px; font-weight:600;
+      background:rgba(138,242,30,.12); color:var(--accent);
+      border:1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+    }
+    .hero .shoe-card{
+      width:min(940px, 92vw); aspect-ratio: 16/9; margin:28px auto 0; border-radius:var(--radius);
+      background:
+        radial-gradient(1200px 600px at 80% 10%, rgba(138,242,30,.20), transparent 50%),
+        linear-gradient(180deg, #15181f, #0e1116);
+      box-shadow: var(--shadow);
+      position:relative; overflow:hidden; transform-style:preserve-3d; perspective:1000px;
+      border:1px solid #222832;
+    }
+    .mesh, .outline, .badge{ position:absolute; inset:auto }
+    .mesh{
+      inset:0; background:
+        radial-gradient(800px 400px at 30% 30%, rgba(45,225,252,.18), transparent 60%),
+        radial-gradient(800px 400px at 70% 70%, rgba(138,242,30,.22), transparent 60%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><defs><pattern id="p" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,.08)"/></pattern></defs><rect width="100%" height="100%" fill="url(%23p)"/></svg>');
+      mix-blend-mode:screen; opacity:.9; will-change:transform;
+    }
+    .outline{
+      right:-8%; top:10%; width:70%;
+      height:auto; aspect-ratio: 3/1.5; border-radius:28px;
+      border:2px dashed rgba(255,255,255,.12);
+      transform:rotate(-12deg) translateZ(20px);
+    }
+    .badge{
+      left:22px; bottom:18px; padding:8px 12px; border-radius:10px;
+      background:#0c0f14; border:1px solid #223; color:var(--muted); font-size:14px
+    }
+    .specs{
+      padding:120px 0; background:
+        radial-gradient(900px 500px at 10% 10%, rgba(45,225,252,.10), transparent 50%),
+        linear-gradient(180deg, transparent, rgba(255,255,255,.02) 30%, transparent);
+    }
+    .spec-grid{
+      display:grid; grid-template-columns:repeat(12, 1fr); gap:20px; align-items:stretch
+    }
+    .spec{
+      grid-column: span 4; background:var(--panel); border:1px solid var(--grid);
+      padding:24px; border-radius:14px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+      transition:transform .25s ease, border-color .25s ease;
+    }
+    .spec:hover{ transform:translateY(-4px); border-color:color-mix(in oklab, var(--accent) 20%, var(--grid)) }
+    .spec h3{ margin:6px 0 10px; font-size:20px }
+    .spec p{ margin:0; color:var(--muted) }
+    .spec .stripe{
+      position:absolute; inset:auto -12%  -8% auto; width:48%; height:80px;
+      transform:rotate(-12deg); background:linear-gradient(90deg, transparent, rgba(138,242,30,.18));
+    }
+    @media (max-width:980px){ .spec{ grid-column: span 6 } }
+    @media (max-width:680px){ .spec{ grid-column: span 12 } }
+
+    .showcase{ padding:120px 0 60px }
+    .gallery{
+      display:grid; grid-template-columns:1.2fr .8fr; gap:20px;
+    }
+    .card{
+      background:var(--panel); border:1px solid var(--grid); border-radius:14px; overflow:hidden; box-shadow:var(--shadow)
+    }
+    .card .ph{
+      aspect-ratio: 16/10; background:
+        linear-gradient(120deg, rgba(138,242,30,.15), rgba(45,225,252,.08)),
+        radial-gradient(1200px 400px at 70% 10%, rgba(255,255,255,.08), transparent);
+    }
+    .card .meta{ padding:16px 18px; color:var(--muted) }
+
+    .colors{ padding:80px 0 120px }
+    .swatches{ display:flex; gap:16px; flex-wrap:wrap }
+    .swatch{
+      width:220px; max-width:46vw; border-radius:14px; padding:18px; border:1px solid var(--grid);
+      background:var(--panel); box-shadow:var(--shadow)
+    }
+    .row{ display:flex; gap:8px; margin-top:12px }
+    .chip{ width:36px; height:36px; border-radius:50%; border:1px solid var(--grid) }
+
+    footer{ padding:40px 0 80px; color:var(--muted); text-align:center }
+
+    /* Scroll/Parallax helpers */
+    .parallax{ will-change:transform; transform:translateZ(0) }
+    .tilt{ transform-style:preserve-3d; will-change:transform }
+    .reveal{ opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease }
+    .reveal.is-visible{ opacity:1; transform:none }
+
+    /* Motion safety */
+    @media (prefers-reduced-motion: reduce){
+      .parallax,.tilt{ transform:none !important }
+      .reveal{ transition:none }
+      *{ scroll-behavior:auto }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header>
+    <div class="container">
+      <div class="brand" aria-label="Barebarics">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Barebarics</span>
+      </div>
+      <nav aria-label="Primary">
+        <a href="#specs">Specs</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#colors">Colorways</a>
+        <button class="cta" onclick="document.getElementById('notify').showModal()">Notify me</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero container" aria-labelledby="title">
+    <div style="width:100%">
+      <span class="tag">Urban Barefoot Concept</span>
+      <h1 id="title" class="parallax" data-speed="0.12">NOMAD</h1>
+      <p class="reveal" style="max-width:740px;margin:0 auto;color:var(--muted)">
+        Adaptive comfort for concrete jungles. Minimal profile, 360° ground feedback, and a removable micro-cushion insert for marathon city days.
+      </p>
+
+      <figure class="shoe-card tilt" aria-label="3D NOMAD card">
+        <div class="mesh parallax" data-speed="-0.06" aria-hidden="true"></div>
+        <div class="outline parallax" data-speed="0.08" aria-hidden="true"></div>
+        <figcaption class="badge">Barebarics — Urban Nomad Prototype • v0.1</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===== Specs ===== -->
+  <section id="specs" class="specs">
+    <div class="container">
+      <h2 class="reveal" style="font-size:32px;margin:0 0 22px">Key Capabilities</h2>
+      <div class="spec-grid">
+        <article class="spec reveal tilt">
+          <span class="stripe" aria-hidden="true"></span>
+          <h3>Adaptive Sole</h3>
+          <p>Ultra-thin flexible sole with <strong>removable 1–2mm micro insert</strong> for long concrete walks. Slide-in or magnetic docking.</p>
+        </article>
+        <article class="spec reveal tilt">
+          <span class="stripe" aria-hidden="true"></span>
+          <h3>Future-Mesh Upper</h3>
+          <p>Bio-based, breathable weave with <strong>origami flex zones</strong>—light, durable, and city-proof.</p>
+        </article>
+        <article class="spec reveal tilt">
+          <span class="stripe" aria-hidden="true"></span>
+          <h3>Minimal Lacing</h3>
+          <p>Low-profile quick-pull hidden under sleek panels. Looks clean, locks precise.</p>
+        </article>
+        <article class="spec reveal tilt">
+          <span class="stripe" aria-hidden="true"></span>
+          <h3>360° Feedback</h3>
+          <p>Honeycomb midfoot/heel geometry for true barefoot feel with sidewall wrap for urban grip.</p>
+        </article>
+        <article class="spec reveal tilt">
+          <span class="stripe" aria-hidden="true"></span>
+          <h3>Night Reactive</h3>
+          <p>Subtle reflective seams—minimal by day, outline glow by night. Safety meets style.</p>
+        </article>
+        <article class="spec reveal tilt">
+          <span class="stripe" aria-hidden="true"></span>
+          <h3>Barebarics Identity</h3>
+          <p>Dark-accent <strong>Barebarics</strong> logo integrated into side geometry and heel emboss—premium, not loud.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Showcase ===== -->
+  <section id="showcase" class="showcase container">
+    <h2 class="reveal" style="font-size:32px;margin:0 0 18px">Showcase</h2>
+    <div class="gallery">
+      <figure class="card reveal tilt">
+        <div class="ph" role="img" aria-label="Ash City colorway mock"></div>
+        <figcaption class="meta">“Ash City” — concrete gray with neon line accents; stealth logo on side panel.</figcaption>
+      </figure>
+      <div class="stack" style="display:grid; gap:20px">
+        <figure class="card reveal tilt">
+          <div class="ph" role="img" aria-label="Nomad Sand colorway mock"></div>
+          <figcaption class="meta">“Nomad Sand” — desert beige, raw hemp texture; tonal laces.</figcaption>
+        </figure>
+        <figure class="card reveal tilt">
+          <div class="ph" role="img" aria-label="Cyber Roots colorway mock"></div>
+          <figcaption class="meta">“Cyber Roots” — deep black, reflective seam network for night runs.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Colorways ===== -->
+  <section id="colors" class="colors container">
+    <h2 class="reveal" style="font-size:32px;margin:0 0 12px">Colorways</h2>
+    <p class="reveal" style="color:var(--muted);margin:0 0 22px">First wave palettes designed for urban contrast.</p>
+    <div class="swatches">
+      <div class="swatch reveal">
+        <strong>Ash City</strong>
+        <div class="row">
+          <span class="chip" style="background:#2e323a" title="Concrete Gray"></span>
+          <span class="chip" style="background:#0f1116" title="Graphite"></span>
+          <span class="chip" style="background:var(--accent)" title="Neon Line"></span>
+        </div>
+      </div>
+      <div class="swatch reveal">
+        <strong>Nomad Sand</strong>
+        <div class="row">
+          <span class="chip" style="background:#d7c6a1"></span>
+          <span class="chip" style="background:#a48c63"></span>
+          <span class="chip" style="background:#705e41"></span>
+        </div>
+      </div>
+      <div class="swatch reveal">
+        <strong>Cyber Roots</strong>
+        <div class="row">
+          <span class="chip" style="background:#0a0b0f"></span>
+          <span class="chip" style="background:#121520"></span>
+          <span class="chip" style="background:#b7bec8"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <p>© <span id="year"></span> Barebarics — NOMAD Concept. All visuals are conceptual. </p>
+  </footer>
+
+  <!-- ===== Notify modal ===== -->
+  <dialog id="notify" style="border:none;border-radius:16px;padding:0;max-width:min(520px,92vw);background:var(--panel);color:var(--fg);box-shadow:var(--shadow)">
+    <form method="dialog" style="padding:22px 22px 10px;border-bottom:1px solid var(--grid)">
+      <h3 style="margin:0 0 6px">Get launch updates</h3>
+      <p style="margin:0;color:var(--muted)">We’ll ping you when NOMAD drops.</p>
+    </form>
+    <form method="dialog" style="padding:16px 22px 22px;display:grid;gap:10px">
+      <label>
+        <span class="sr">Email</span>
+        <input type="email" required placeholder="you@domain.com" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--grid);background:transparent;color:inherit" />
+      </label>
+      <menu style="display:flex;gap:10px;justify-content:flex-end;margin:0">
+        <button value="cancel" style="background:transparent;border:1px solid var(--grid);border-radius:999px;padding:10px 14px;color:var(--fg)">Close</button>
+        <button class="cta" value="ok">Notify me</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script>
+    /* =========================================================
+       Minimal scroll/tilt engine (no deps)
+       - Parallax elements use [data-speed] (positive == slower)
+       - Tilt cards respond to cursor & scroll
+       - Reveal on view via IntersectionObserver
+    ========================================================== */
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---- Parallax on scroll ----
+    const parallaxEls = $$('.parallax');
+    let lastY = window.scrollY, ticking = false;
+    function onScroll(){
+      lastY = window.scrollY;
+      if(!ticking){ requestAnimationFrame(updateParallax); ticking = true; }
+    }
+    function updateParallax(){
+      const h = window.innerHeight;
+      parallaxEls.forEach(el=>{
+        const rect = el.getBoundingClientRect();
+        const inview = rect.bottom > 0 && rect.top < h;
+        if(!inview) return;
+        const speed = parseFloat(el.dataset.speed || 0.1);
+        const offset = (rect.top - h/2) * speed;
+        el.style.transform = `translate3d(0, ${offset.toFixed(2)}px, 0)`;
+      });
+      ticking = false;
+    }
+    if(!prefersReduced){ window.addEventListener('scroll', onScroll, {passive:true}); updateParallax(); }
+
+    // ---- Tilt on pointer movement ----
+    const tilts = $$('.tilt');
+    function attachTilt(el){
+      let rAF = null;
+      function move(e){
+        if(prefersReduced) return;
+        const rect = el.getBoundingClientRect();
+        const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+        const dx = (e.clientX - cx) / (rect.width/2);
+        const dy = (e.clientY - cy) / (rect.height/2);
+        if(!rAF){
+          rAF = requestAnimationFrame(()=>{
+            el.style.transform = `rotateX(${(-dy*5).toFixed(2)}deg) rotateY(${(dx*6).toFixed(2)}deg) translateZ(0)`;
+            rAF = null;
+          });
+        }
+      }
+      function leave(){ el.style.transform = 'rotateX(0) rotateY(0)'; }
+      el.addEventListener('pointermove', move);
+      el.addEventListener('pointerleave', leave);
+    }
+    tilts.forEach(attachTilt);
+
+    // ---- Reveal on view ----
+    const revealEls = $$('.reveal');
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); }
+      });
+    },{threshold:0.15});
+    revealEls.forEach(el=>io.observe(el));
+
+    // ---- Footer year ----
+    $('#year').textContent = new Date().getFullYear();
+
+    // ---- Accessibility niceties ----
+    // Close dialog on Escape for older browsers
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        const d = $('#notify'); if(d?.open) d.close('cancel');
+      }
+    });
+  </script>
+
+  <!--
+    React-ready notes:
+    - <Header/>, <Hero/>, <Specs/>, <Showcase/>, <Colorways/>, <Footer/>, <NotifyDialog/>
+    - Parallax/Tilt hooks can wrap IntersectionObserver + RAF logic
+    - Tokens in a ThemeProvider; CSS vars map to JS theme
+  -->
+</body>
+</html>
