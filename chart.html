@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Developer Star Evaluation (Self vs Peers)</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#0f1620;
+      --panel2:#0c131c;
+      --text:#e8eef6;
+      --muted:#a9b6c6;
+      --line:rgba(255,255,255,.10);
+      --line2:rgba(255,255,255,.18);
+      --accent:#8bd4ff;
+      --accent2:#b7ffda;
+      --danger:#ff7b7b;
+      --ok:#a2ffb0;
+      --warn:#ffe08a;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1200px 500px at 20% -10%, rgba(139,212,255,.12), transparent 60%),
+        radial-gradient(800px 500px at 80% 0%, rgba(183,255,218,.10), transparent 55%),
+        radial-gradient(900px 600px at 50% 110%, rgba(255,224,138,.08), transparent 55%),
+        var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px 16px 40px;
+    }
+    header{
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .title{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    h1{
+      margin:0;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+      max-width:70ch;
+    }
+    .topbar{
+      display:flex;flex-wrap:wrap;gap:8px;
+      align-items:center;justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text);
+      padding:9px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:.2px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+      transition: transform .05s ease, border-color .15s ease, background .15s ease;
+      user-select:none;
+    }
+    .btn:hover{border-color:rgba(255,255,255,.22)}
+    .btn:active{transform: translateY(1px)}
+    .btn.secondary{
+      background:transparent;
+      box-shadow:none;
+    }
+    .btn.danger{
+      border-color:rgba(255,123,123,.35);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel .hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .panel .hd h2{
+      margin:0;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+    }
+    .panel .bd{padding:12px 14px 14px}
+    .mini{
+      font-size:12px;color:var(--muted);line-height:1.35
+    }
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    .kpi{
+      background:rgba(0,0,0,.22);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 10px 9px;
+    }
+    .kpi .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.35px}
+    .kpi .v{
+      margin-top:5px;
+      font-family:var(--mono);
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .kpi .v small{font-weight:700;color:var(--muted)}
+    .canvasWrap{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    canvas{
+      width:100%;
+      height:380px;
+      display:block;
+      background:rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      border-radius:16px;
+    }
+    .legend{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+      font-size:12px;color:var(--muted)
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;display:inline-block;
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .dot.self{background:var(--accent)}
+    .dot.peer{background:transparent; border-color:rgba(183,255,218,.7)}
+    .dot.delta{background:var(--warn); border-color:rgba(255,224,138,.65)}
+    .hint{
+      font-size:12px;color:var(--muted);
+      padding:10px 12px;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:14px;
+      background:rgba(0,0,0,.18);
+      line-height:1.35;
+    }
+
+    /* Axis cards */
+    .axisList{display:flex;flex-direction:column;gap:10px}
+    .axisCard{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .axisTop{
+      padding:12px 12px 10px;
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+      border-bottom:1px solid var(--line);
+    }
+    .axisName{
+      display:flex;flex-direction:column;gap:4px;
+    }
+    .axisName b{
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .axisName span{
+      font-size:12px;color:var(--muted);line-height:1.3;
+    }
+    .badges{
+      display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;
+    }
+    .badge{
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background:rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+    .axisMid{
+      padding:10px 12px 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 720px){
+      .axisMid{grid-template-columns:1fr}
+    }
+    .q{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      padding:10px 10px 9px;
+    }
+    .q .qt{font-size:12px;color:var(--muted);line-height:1.35}
+    .scoreRow{
+      display:flex;gap:10px;align-items:center;justify-content:space-between;
+      margin-top:10px;
+    }
+    .num{
+      font-family:var(--mono);
+      font-weight:800;
+      font-size:14px;
+      min-width:34px;
+      text-align:right;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color: var(--accent);
+    }
+    .row2{
+      display:flex;gap:10px;align-items:center;
+    }
+    .deltaTag{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .deltaTag.hot{
+      color:#1a1400;
+      background:rgba(255,224,138,.95);
+      border-color:rgba(255,224,138,.45);
+    }
+
+    /* Peers section */
+    .peersBar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .peersControls{
+      display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+    }
+    .in{
+      background:rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      border-radius:12px;
+      color:var(--text);
+      padding:9px 10px;
+      font-size:12px;
+      outline:none;
+      min-width:180px;
+    }
+    .peerList{display:flex;flex-direction:column;gap:10px}
+    .peerCard{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .peerHd{
+      padding:10px 12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid var(--line);
+    }
+    .peerHd b{font-size:13px}
+    .peerHd .right{display:flex;gap:8px;align-items:center}
+    .peerHd small{color:var(--muted);font-size:12px}
+    .peerBd{
+      padding:10px 12px 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 720px){
+      .peerBd{grid-template-columns:1fr}
+    }
+    .miniAxis{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:rgba(255,255,255,.03);
+    }
+    .miniAxis .lbl{font-size:12px;color:var(--muted);line-height:1.25}
+    .miniAxis .scoreRow{margin-top:8px}
+    .miniAxis input[type="range"]{accent-color: var(--accent2);}
+
+    /* Modal-ish export */
+    textarea{
+      width:100%;
+      min-height:170px;
+      resize:vertical;
+      background:rgba(0,0,0,.25);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.35;
+      outline:none;
+    }
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 980px){
+      .split{grid-template-columns:1fr}
+    }
+    .smallNote{font-size:12px;color:var(--muted);line-height:1.35}
+    .hr{height:1px;background:var(--line);margin:10px 0}
+    .footerNote{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .mono{font-family:var(--mono)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Developer Star Evaluation — Self vs Peers</h1>
+        <p class="subtitle">
+          Fill your <span class="mono">Self</span> star first (1–10). Add 3–5 peers and let them rate the same axes.
+          The goal is <b>self-calibration</b> (alignment), not ranking.
+        </p>
+      </div>
+      <div class="topbar">
+        <button class="btn secondary" id="btnDemo">Load demo</button>
+        <button class="btn secondary" id="btnReset">Reset</button>
+        <button class="btn" id="btnExport">Export JSON</button>
+        <button class="btn" id="btnImport">Import JSON</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: STAR + KPIs -->
+      <section class="panel">
+        <div class="hd">
+          <h2>Star Graph</h2>
+          <div class="legend">
+            <span class="pill"><i class="dot self"></i>Self</span>
+            <span class="pill"><i class="dot peer"></i>Peers avg (dashed)</span>
+            <span class="pill"><i class="dot delta"></i>Delta ≥ <span class="mono" id="deltaLabel">2</span></span>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="canvasWrap">
+            <canvas id="star" width="900" height="760"></canvas>
+            <div class="hint">
+              <b>Read it like this:</b>
+              <ul style="margin:8px 0 0 18px; padding:0; color:var(--muted)">
+                <li><span class="mono">Peers &gt; Self</span> → hidden strength</li>
+                <li><span class="mono">Self &gt; Peers</span> → blind spot</li>
+                <li>Big deltas = action items. Small deltas = stable identity.</li>
+              </ul>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi">
+                <div class="k">Self avg</div>
+                <div class="v" id="kSelf">— <small>/10</small></div>
+              </div>
+              <div class="kpi">
+                <div class="k">Peers avg</div>
+                <div class="v" id="kPeers">— <small>/10</small></div>
+              </div>
+              <div class="kpi">
+                <div class="k">Avg delta</div>
+                <div class="v" id="kDelta">—</div>
+              </div>
+            </div>
+
+            <div class="footerNote">
+              Rule: if you score yourself <span class="mono">9–10</span>, you should be able to name <b>specific behaviors</b> that justify it.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: FORMS -->
+      <section class="panel">
+        <div class="hd">
+          <h2>Axes, Questions, Ratings</h2>
+          <div class="mini mono">scale: 1..10</div>
+        </div>
+        <div class="bd">
+          <div class="axisList" id="axisList"></div>
+
+          <div class="hr"></div>
+
+          <div class="peersBar">
+            <div class="mini">
+              <b>Peers:</b> add 3–5 people who actually work with you (not random).
+              Peers rate the same axes. The system computes the average.
+            </div>
+            <div class="peersControls">
+              <input class="in" id="peerName" placeholder="Peer name (e.g., Martina)" />
+              <button class="btn" id="btnAddPeer">Add peer</button>
+            </div>
+          </div>
+
+          <div class="peerList" id="peerList"></div>
+
+          <div class="hr"></div>
+
+          <div class="split">
+            <div>
+              <div class="mini"><b>Export / Import payload:</b></div>
+              <textarea id="jsonBox" placeholder="Export shows here. Import expects the same JSON format."></textarea>
+              <div class="smallNote" style="margin-top:8px">
+                Tip: store this per person per period. It’s stable enough to render anywhere (canvas, svg, Chart.js).
+              </div>
+            </div>
+            <div>
+              <div class="mini"><b>Mechanism notes (non-HR, practical):</b></div>
+              <div class="hint" style="height:100%">
+                <ul style="margin:0; padding-left:18px; color:var(--muted); line-height:1.45">
+                  <li>Discuss only deltas ≥ threshold. Ignore noise.</li>
+                  <li>Ask: “What behavior moves this +1?”</li>
+                  <li>No ranking. No compensation tie-in.</li>
+                  <li>Run max 2× per year.</li>
+                </ul>
+              </div>
+              <div class="smallNote" style="margin-top:10px">
+                <b>Delta threshold</b>:
+                <input type="range" id="deltaThreshold" min="0" max="5" step="0.5" value="2" style="width:100%; margin-top:6px" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   Data Model (schema-ish)
+========================= */
+const model = {
+  version: "1.0.0",
+  scale: { min: 1, max: 10, step: 1, rings: [2,4,6,8,10] },
+  axes: [
+    {
+      key: "technical_depth",
+      label: "Technical Depth",
+      category: "technical",
+      description: "Core engineering strength and understanding.",
+      questions: [
+        "Can you debug effectively under pressure, without flailing?",
+        "Do you understand the 'why' behind your technical choices?",
+        "Can you spot hidden complexity before it explodes?"
+      ]
+    },
+    {
+      key: "code_quality",
+      label: "Code Quality & Craft",
+      category: "technical",
+      description: "Code that ages well and respects future maintainers.",
+      questions: [
+        "Is your code readable without a live explanation?",
+        "Do you leave the codebase cleaner than you found it?",
+        "Do tests and boundaries make refactors safe?"
+      ]
+    },
+    {
+      key: "problem_solving",
+      label: "Problem Solving & Ownership",
+      category: "delivery",
+      description: "Turning ambiguity into outcomes; finishing responsibly.",
+      questions: [
+        "When things break, do you drive root cause instead of blame?",
+        "Do you finish and validate outcomes, not just implement?",
+        "Can you make progress with incomplete requirements?"
+      ]
+    },
+    {
+      key: "delivery",
+      label: "Delivery & Reliability",
+      category: "delivery",
+      description: "Consistency, realistic planning, dependable execution.",
+      questions: [
+        "Are your estimates stable and your status updates honest?",
+        "Do you ship reliably, even under changing constraints?",
+        "Do you manage risk early (not at the deadline)?"
+      ]
+    },
+    {
+      key: "collaboration",
+      label: "Collaboration & Team Impact",
+      category: "human",
+      description: "Making others better; unblocking; no silos.",
+      questions: [
+        "Do you actively unblock others without being asked?",
+        "Do you share context (not hoard it) to reduce team risk?",
+        "Do people want to work with you again?"
+      ]
+    },
+    {
+      key: "communication",
+      label: "Communication & Clarity",
+      category: "human",
+      description: "Clear writing, clear speaking, clear thinking.",
+      questions: [
+        "Can you explain complex things simply and precisely?",
+        "Do you surface problems early with concrete details?",
+        "Are your PRs/issues/docs easy to understand?"
+      ]
+    },
+    {
+      key: "self_awareness",
+      label: "Self-Awareness & Growth",
+      category: "human",
+      description: "Seeing yourself clearly and improving intentionally.",
+      questions: [
+        "Do you accept feedback without defensiveness?",
+        "Do you know your limits and ask for help early?",
+        "Do you learn from mistakes without repeating patterns?"
+      ]
+    },
+    {
+      key: "integrity",
+      label: "Integrity & Professional Presence",
+      category: "human",
+      description: "Trustworthiness, consistency, team-first behavior.",
+      questions: [
+        "Do you do the right thing even when it’s inconvenient?",
+        "Do you create psychological safety (no fear, no ego games)?",
+        "Would people trust you in a hard situation?"
+      ]
+    }
+  ],
+  datasets: [
+    {
+      key: "self",
+      label: "Self",
+      values: {}, // filled below
+      style: { strokeToken: "accent", fillToken: "accentSoft", dash: [], opacity: 0.22 }
+    },
+    {
+      key: "peers_avg",
+      label: "Peers (avg)",
+      values: {}, // computed
+      style: { strokeToken: "neutralStrong", fillToken: "neutralSoft", dash: [10, 8], opacity: 0.16 }
+    }
+  ],
+  peers: [], // [{id,name,values:{axisKey:1..10}}]
+  delta: { compare: { baseDatasetKey: "self", targetDatasetKey: "peers_avg" }, deltaHighlightThreshold: 2 }
+};
+
+// init default self values
+for (const ax of model.axes) model.datasets[0].values[ax.key] = 6;
+
+/* =========================
+   Helpers
+========================= */
+const $ = (sel) => document.querySelector(sel);
+const el = (tag, attrs={}, ...children) => {
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k === "html") n.innerHTML = v;
+    else if (k.startsWith("on") && typeof v === "function") n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v);
+  }
+  for (const c of children) n.append(c);
+  return n;
+};
+const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
+const round = (n, d=2)=>Math.round(n*Math.pow(10,d))/Math.pow(10,d);
+
+function avg(nums){
+  if (!nums.length) return 0;
+  return nums.reduce((a,b)=>a+b,0)/nums.length;
+}
+
+function computePeersAverage(){
+  const out = {};
+  for (const ax of model.axes) {
+    const vals = model.peers.map(p => p.values[ax.key]).filter(v => typeof v === "number");
+    out[ax.key] = vals.length ? avg(vals) : model.datasets[0].values[ax.key]; // fallback: self
+  }
+  model.datasets[1].values = out;
+}
+
+function computeKPIs(){
+  const selfVals = model.axes.map(ax => model.datasets[0].values[ax.key]);
+  const peerVals = model.axes.map(ax => model.datasets[1].values[ax.key]);
+
+  const selfAvg = avg(selfVals);
+  const peersAvg = avg(peerVals);
+
+  const deltas = model.axes.map(ax => Math.abs(model.datasets[0].values[ax.key] - model.datasets[1].values[ax.key]));
+  const deltaAvg = avg(deltas);
+
+  $("#kSelf").innerHTML = `${round(selfAvg,2)} <small>/10</small>`;
+  $("#kPeers").innerHTML = `${round(peersAvg,2)} <small>/10</small>`;
+  $("#kDelta").textContent = `${round(deltaAvg,2)}`;
+
+  // Update delta tags in axis list
+  for (const ax of model.axes) {
+    const d = Math.abs(model.datasets[0].values[ax.key] - model.datasets[1].values[ax.key]);
+    const tag = document.querySelector(`[data-delta-for="${ax.key}"]`);
+    if (tag){
+      tag.textContent = `Δ ${round(d,2)}`;
+      tag.classList.toggle("hot", d >= model.delta.deltaHighlightThreshold && model.peers.length > 0);
+    }
+  }
+}
+
+/* =========================
+   Render Axis Cards (Self)
+========================= */
+function renderAxes(){
+  const wrap = $("#axisList");
+  wrap.innerHTML = "";
+
+  for (const ax of model.axes) {
+    const selfVal = model.datasets[0].values[ax.key];
+    const deltaTag = el("span", { class:"deltaTag", "data-delta-for": ax.key }, "Δ —");
+
+    const slider = el("input", {
+      type:"range", min:model.scale.min, max:model.scale.max, step:model.scale.step, value:selfVal,
+      oninput: (e) => {
+        model.datasets[0].values[ax.key] = clamp(parseInt(e.target.value,10), model.scale.min, model.scale.max);
+        // if no peers, keep peer avg aligned visually (optional)
+        computePeersAverage();
+        updateAll();
+      }
+    });
+
+    const num = el("div", { class:"num", id:`self_num_${ax.key}` }, String(selfVal));
+
+    const qs = ax.questions.map(qt =>
+      el("div", { class:"q" },
+        el("div", { class:"qt" }, qt)
+      )
+    );
+
+    const card = el("div", { class:"axisCard" },
+      el("div", { class:"axisTop" },
+        el("div", { class:"axisName" },
+          el("b", {}, ax.label),
+          el("span", {}, ax.description)
+        ),
+        el("div", { class:"badges" },
+          el("span", { class:"badge" }, ax.category),
+          deltaTag
+        )
+      ),
+      el("div", { class:"axisMid" },
+        ...qs,
+        el("div", { class:"q" },
+          el("div", { class:"qt" }, "Self score (1–10)"),
+          el("div", { class:"scoreRow" },
+            slider,
+            num
+          )
+        )
+      )
+    );
+
+    wrap.append(card);
+  }
+}
+
+/* =========================
+   Peers
+========================= */
+let peerIdSeq = 1;
+
+function addPeer(name){
+  const peer = {
+    id: "p_" + (peerIdSeq++),
+    name: name.trim() || `Peer ${peerIdSeq-1}`,
+    values: {}
+  };
+  for (const ax of model.axes) peer.values[ax.key] = 6;
+  model.peers.push(peer);
+  renderPeers();
+  updateAll();
+}
+
+function removePeer(id){
+  model.peers = model.peers.filter(p => p.id !== id);
+  renderPeers();
+  updateAll();
+}
+
+function renderPeers(){
+  const wrap = $("#peerList");
+  wrap.innerHTML = "";
+
+  if (!model.peers.length){
+    wrap.append(el("div", { class:"hint" },
+      el("b", {}, "No peers yet."),
+      el("div", { class:"mini", style:"margin-top:6px" },
+        "Add 3–5 peers to get a meaningful average. Until then, the peer polygon follows your self values."
+      )
+    ));
+    return;
+  }
+
+  for (const peer of model.peers){
+    const peerCard = el("div", { class:"peerCard" },
+      el("div", { class:"peerHd" },
+        el("div", {},
+          el("b", {}, peer.name),
+          el("div", { class:"mini", style:"margin-top:2px" }, "Rates the same 8 axes (1–10).")
+        ),
+        el("div", { class:"right" },
+          el("small", {}, peer.id),
+          el("button", { class:"btn secondary danger", onclick: ()=>removePeer(peer.id) }, "Remove")
+        )
+      )
+    );
+
+    const body = el("div", { class:"peerBd" });
+    for (const ax of model.axes){
+      const val = peer.values[ax.key];
+      const slider = el("input", {
+        type:"range", min:model.scale.min, max:model.scale.max, step:model.scale.step, value:val,
+        oninput: (e) => {
+          peer.values[ax.key] = clamp(parseInt(e.target.value,10), model.scale.min, model.scale.max);
+          updateAll();
+        }
+      });
+      const num = el("div", { class:"num", id:`peer_${peer.id}_${ax.key}` }, String(val));
+
+      body.append(
+        el("div", { class:"miniAxis" },
+          el("div", { class:"lbl" }, ax.label),
+          el("div", { class:"scoreRow" },
+            slider,
+            num
+          )
+        )
+      );
+    }
+
+    peerCard.append(body);
+    wrap.append(peerCard);
+  }
+}
+
+/* =========================
+   Draw Star Radar (Canvas)
+========================= */
+function tokenColor(token){
+  // keep palette small and clean
+  switch(token){
+    case "accent": return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+    case "accentSoft": return "rgba(139,212,255,.22)";
+    case "neutralStrong": return getComputedStyle(document.documentElement).getPropertyValue("--accent2").trim();
+    case "neutralSoft": return "rgba(183,255,218,.16)";
+    default: return "rgba(255,255,255,.55)";
+  }
+}
+
+function drawStar(){
+  const canvas = $("#star");
+  const ctx = canvas.getContext("2d");
+
+  // HiDPI
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.floor(rect.width * dpr);
+  const h = Math.floor(rect.height * dpr);
+  if (canvas.width !== w || canvas.height !== h){
+    canvas.width = w;
+    canvas.height = h;
+  }
+
+  ctx.clearRect(0,0,w,h);
+
+  const cx = w/2, cy = h/2;
+  const R = Math.min(w,h) * 0.38;
+
+  // grid
+  const rings = model.scale.rings.slice().sort((a,b)=>a-b);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(255,255,255,.10)";
+  ctx.fillStyle = "transparent";
+
+  // axes lines
+  const N = model.axes.length;
+  for (let i=0;i<N;i++){
+    const a = (-Math.PI/2) + (i*(2*Math.PI/N));
+    const x = cx + Math.cos(a)*R;
+    const y = cy + Math.sin(a)*R;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(x,y);
+    ctx.stroke();
+  }
+
+  // rings as polygons
+  for (const rv of rings){
+    const rr = (rv/model.scale.max)*R;
+    ctx.beginPath();
+    for (let i=0;i<N;i++){
+      const a = (-Math.PI/2) + (i*(2*Math.PI/N));
+      const x = cx + Math.cos(a)*rr;
+      const y = cy + Math.sin(a)*rr;
+      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  // axis labels
+  ctx.font = `${Math.max(11, Math.round(12*dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+  ctx.fillStyle = "rgba(233,241,250,.85)";
+  for (let i=0;i<N;i++){
+    const ax = model.axes[i];
+    const a = (-Math.PI/2) + (i*(2*Math.PI/N));
+    const lx = cx + Math.cos(a)*(R + 18*dpr);
+    const ly = cy + Math.sin(a)*(R + 18*dpr);
+
+    const text = ax.label;
+    // alignment
+    const cos = Math.cos(a), sin = Math.sin(a);
+    ctx.textAlign = (Math.abs(cos) < 0.2) ? "center" : (cos > 0 ? "left" : "right");
+    ctx.textBaseline = (Math.abs(sin) < 0.2) ? "middle" : (sin > 0 ? "top" : "bottom");
+    ctx.fillText(text, lx, ly);
+  }
+
+  // helper: compute points from dataset values
+  function pointsFor(dataset){
+    const pts = [];
+    for (let i=0;i<N;i++){
+      const key = model.axes[i].key;
+      const v = dataset.values[key] ?? model.scale.min;
+      const vv = clamp(v, model.scale.min, model.scale.max);
+      const rr = (vv/model.scale.max)*R;
+      const a = (-Math.PI/2) + (i*(2*Math.PI/N));
+      pts.push([cx + Math.cos(a)*rr, cy + Math.sin(a)*rr, vv]);
+    }
+    return pts;
+  }
+
+  // draw polygon
+  function drawPoly(dataset){
+    const pts = pointsFor(dataset);
+
+    // fill
+    ctx.beginPath();
+    pts.forEach((p, i)=> i===0 ? ctx.moveTo(p[0],p[1]) : ctx.lineTo(p[0],p[1]));
+    ctx.closePath();
+    ctx.fillStyle = tokenColor(dataset.style.fillToken);
+    ctx.fill();
+
+    // stroke
+    ctx.beginPath();
+    pts.forEach((p, i)=> i===0 ? ctx.moveTo(p[0],p[1]) : ctx.lineTo(p[0],p[1]));
+    ctx.closePath();
+    ctx.strokeStyle = tokenColor(dataset.style.strokeToken);
+
+    ctx.setLineDash(dataset.style.dash || []);
+    ctx.lineWidth = 2*dpr;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // points
+    ctx.fillStyle = tokenColor(dataset.style.strokeToken);
+    for (const p of pts){
+      ctx.beginPath();
+      ctx.arc(p[0],p[1], 3.4*dpr, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // order: peer first (under), then self (over)
+  drawPoly(model.datasets[1]);
+  drawPoly(model.datasets[0]);
+
+  // delta highlights (per-axis glow dot on ring where delta exceeds threshold)
+  if (model.peers.length){
+    const thr = model.delta.deltaHighlightThreshold;
+    ctx.fillStyle = "rgba(255,224,138,.95)";
+    ctx.strokeStyle = "rgba(255,224,138,.5)";
+    ctx.lineWidth = 1.2*dpr;
+
+    for (let i=0;i<N;i++){
+      const key = model.axes[i].key;
+      const s = model.datasets[0].values[key];
+      const p = model.datasets[1].values[key];
+      const d = Math.abs(s - p);
+      if (d >= thr){
+        const a = (-Math.PI/2) + (i*(2*Math.PI/N));
+        const rr = R + 6*dpr;
+        const x = cx + Math.cos(a)*rr;
+        const y = cy + Math.sin(a)*rr;
+        ctx.beginPath();
+        ctx.arc(x,y, 4.0*dpr, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+/* =========================
+   Update UI numbers
+========================= */
+function updateNumbers(){
+  // self numbers
+  for (const ax of model.axes){
+    const v = model.datasets[0].values[ax.key];
+    const n = document.getElementById(`self_num_${ax.key}`);
+    if (n) n.textContent = String(v);
+  }
+  // peers numbers
+  for (const peer of model.peers){
+    for (const ax of model.axes){
+      const n = document.getElementById(`peer_${peer.id}_${ax.key}`);
+      if (n) n.textContent = String(peer.values[ax.key]);
+    }
+  }
+}
+
+/* =========================
+   Export / Import
+========================= */
+function exportJSON(){
+  // compute current peers avg and include it
+  computePeersAverage();
+  const payload = {
+    version: model.version,
+    scale: model.scale,
+    axes: model.axes.map(a => ({
+      key: a.key,
+      label: a.label,
+      category: a.category,
+      description: a.description,
+      questions: a.questions
+    })),
+    datasets: [
+      { key:"self", label:"Self", values: {...model.datasets[0].values}, style: model.datasets[0].style },
+      { key:"peers_avg", label:"Peers (avg)", values: {...model.datasets[1].values}, style: model.datasets[1].style }
+    ],
+    peers: model.peers.map(p => ({ id:p.id, name:p.name, values:{...p.values} })),
+    delta: model.delta
+  };
+  $("#jsonBox").value = JSON.stringify(payload, null, 2);
+}
+
+function importJSON(){
+  const raw = $("#jsonBox").value.trim();
+  if (!raw) return alert("Paste JSON into the box first.");
+  let obj;
+  try{ obj = JSON.parse(raw); } catch(e){ return alert("Invalid JSON."); }
+
+  // minimal validation
+  if (!obj.axes || !Array.isArray(obj.axes) || obj.axes.length !== 8) return alert("JSON must include 8 axes.");
+  if (!obj.datasets || !Array.isArray(obj.datasets)) return alert("JSON missing datasets.");
+
+  // apply
+  model.version = obj.version || model.version;
+  if (obj.scale) model.scale = obj.scale;
+  model.axes = obj.axes.map(a => ({
+    key:a.key, label:a.label, category:a.category || "misc",
+    description:a.description || "", questions: Array.isArray(a.questions) ? a.questions : []
+  }));
+
+  // self dataset
+  const dsSelf = obj.datasets.find(d => d.key === "self");
+  if (dsSelf?.values) model.datasets[0].values = {...dsSelf.values};
+  // peers avg dataset (computed anyway)
+  const dsPeers = obj.datasets.find(d => d.key === "peers_avg");
+  if (dsPeers?.values) model.datasets[1].values = {...dsPeers.values};
+
+  // peers
+  model.peers = Array.isArray(obj.peers) ? obj.peers.map(p => ({
+    id: p.id || ("p_"+(peerIdSeq++)),
+    name: p.name || "Peer",
+    values: p.values || {}
+  })) : [];
+
+  // delta
+  if (obj.delta?.deltaHighlightThreshold !== undefined){
+    model.delta.deltaHighlightThreshold = Number(obj.delta.deltaHighlightThreshold) || 2;
+  }
+
+  // normalize self values
+  for (const ax of model.axes){
+    const v = model.datasets[0].values[ax.key];
+    model.datasets[0].values[ax.key] = clamp(parseInt(v ?? 6,10), model.scale.min, model.scale.max);
+  }
+  // normalize peer values
+  for (const peer of model.peers){
+    for (const ax of model.axes){
+      const v = peer.values[ax.key];
+      peer.values[ax.key] = clamp(parseInt(v ?? 6,10), model.scale.min, model.scale.max);
+    }
+  }
+
+  // update threshold UI
+  $("#deltaThreshold").value = model.delta.deltaHighlightThreshold;
+  $("#deltaLabel").textContent = model.delta.deltaHighlightThreshold;
+
+  // rerender
+  renderAxes();
+  renderPeers();
+  updateAll();
+}
+
+/* =========================
+   Demo / Reset
+========================= */
+function loadDemo(){
+  // a realistic gap profile
+  model.datasets[0].values = {
+    technical_depth: 8,
+    code_quality: 7,
+    problem_solving: 8,
+    delivery: 6,
+    collaboration: 6,
+    communication: 5,
+    self_awareness: 7,
+    integrity: 8
+  };
+  model.peers = [];
+  peerIdSeq = 1;
+  addPeer("Martina");
+  addPeer("Rudo");
+  addPeer("Lubo");
+
+  // tweak peers to create interesting deltas
+  const tweaks = [
+    { technical_depth:7, code_quality:7, problem_solving:7, delivery:7, collaboration:8, communication:7, self_awareness:6, integrity:8 },
+    { technical_depth:7, code_quality:8, problem_solving:7, delivery:7, collaboration:7, communication:6, self_awareness:6, integrity:8 },
+    { technical_depth:6, code_quality:7, problem_solving:7, delivery:8, collaboration:8, communication:7, self_awareness:6, integrity:8 }
+  ];
+  model.peers.forEach((p,i)=> p.values = {...tweaks[i]});
+
+  renderAxes();
+  renderPeers();
+  updateAll();
+}
+
+function resetAll(){
+  model.peers = [];
+  peerIdSeq = 1;
+  for (const ax of model.axes) model.datasets[0].values[ax.key] = 6;
+  model.delta.deltaHighlightThreshold = 2;
+  $("#deltaThreshold").value = 2;
+  $("#deltaLabel").textContent = 2;
+  $("#jsonBox").value = "";
+  renderAxes();
+  renderPeers();
+  updateAll();
+}
+
+/* =========================
+   Master update
+========================= */
+function updateAll(){
+  computePeersAverage();
+  updateNumbers();
+  computeKPIs();
+  drawStar();
+}
+
+/* =========================
+   Wire UI
+========================= */
+$("#btnAddPeer").addEventListener("click", ()=>{
+  const name = $("#peerName").value;
+  $("#peerName").value = "";
+  addPeer(name);
+});
+$("#peerName").addEventListener("keydown", (e)=>{
+  if (e.key === "Enter"){
+    e.preventDefault();
+    $("#btnAddPeer").click();
+  }
+});
+
+$("#btnExport").addEventListener("click", exportJSON);
+$("#btnImport").addEventListener("click", importJSON);
+$("#btnDemo").addEventListener("click", loadDemo);
+$("#btnReset").addEventListener("click", resetAll);
+
+$("#deltaThreshold").addEventListener("input", (e)=>{
+  model.delta.deltaHighlightThreshold = Number(e.target.value);
+  $("#deltaLabel").textContent = String(model.delta.deltaHighlightThreshold);
+  updateAll();
+});
+
+window.addEventListener("resize", ()=>drawStar());
+
+/* =========================
+   Boot
+========================= */
+renderAxes();
+renderPeers();
+updateAll();
+</script>
+</body>
+</html>
