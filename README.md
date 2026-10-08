@@ -15,7 +15,8 @@ One HTML file each, in `apps/`:
 ## Folders
 
 - `apps/` – mini apps
-- `assets/` – fonts (used by the home page) and icons
+- `classic/` – previous home page
+- `assets/` – fonts (IBM Plex Sans and Copperplate CC, used by the home page) and icons
 - `api/` – static mock API pages
 - `blog/` – redirect to the blog
 

@@ -2,36 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Richard Kollar</title>
   <meta name="description" content="Richard Kollar, software architecture and engineering. Find me on GitHub, LinkedIn and X, or send an email.">
   <link rel="canonical" href="https://richardkollar.sk/">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#E4E9EF" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0D131A" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#17120F">
 
   <meta property="og:type" content="profile">
   <meta property="og:title" content="Richard Kollar">
   <meta property="og:description" content="Software Architecture &amp; Engineering">
   <meta property="og:url" content="https://richardkollar.sk/">
   <meta property="og:site_name" content="richardkollar.sk">
-  <meta property="og:image" content="https://placecats.com/neo/1200/630">
+  <meta property="og:image" content="https://richardkollar.sk/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="A cat, standing in for a profile photo">
+  <meta property="og:image:alt" content="An off-white business card on a dark table: Richard Kollar, Software Architect, Kollar &amp; Kollar">
   <meta property="profile:first_name" content="Richard">
   <meta property="profile:last_name" content="Kollar">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@Richard_Kollar">
   <meta name="twitter:title" content="Richard Kollar">
   <meta name="twitter:description" content="Software Architecture &amp; Engineering">
-  <meta name="twitter:image" content="https://placecats.com/neo/1200/630">
-  <meta name="twitter:image:alt" content="A cat, standing in for a profile photo">
+  <meta name="twitter:image" content="https://richardkollar.sk/assets/og.png">
+  <meta name="twitter:image:alt" content="An off-white business card on a dark table: Richard Kollar, Software Architect, Kollar &amp; Kollar">
 
   <link rel="icon" href="favicon.ico" sizes="any">
-  <link rel="preload" href="assets/fonts/IBMPlexSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
 
   <style>
+    /* Copperplate: the system font where it exists (macOS, iOS, Windows with Office), otherwise
+       Copperplate CC (Owen Earl, SIL OFL 1.1), scaled so its caps match the system font's cap height. */
+    @font-face {
+      font-family: "Copperplate Local";
+      font-weight: 300;
+      font-style: normal;
+      src: local("Copperplate-Light"), local("Copperplate Light"), local("Copperplate Gothic Light"), local("CopperplateGothic-Light");
+    }
+    @font-face {
+      font-family: "Copperplate Local";
+      font-weight: 700;
+      font-style: normal;
+      src: local("Copperplate-Bold"), local("Copperplate Bold"), local("Copperplate Gothic Bold"), local("CopperplateGothic-Bold");
+    }
+    @font-face {
+      font-family: "Copperplate CC";
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+      size-adjust: 78.6%;
+      src: url("assets/fonts/CopperplateCC-Heavy.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Copperplate CC";
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+      size-adjust: 78.6%;
+      src: url("assets/fonts/CopperplateCC-Bold.woff2") format("woff2");
+    }
     @font-face {
       font-family: "IBM Plex Sans";
       font-style: normal;
@@ -39,332 +67,580 @@
       font-display: swap;
       src: url("assets/fonts/IBMPlexSans-Variable.woff2") format("woff2");
     }
-    @font-face {
-      font-family: "IBM Plex Sans";
-      font-style: italic;
-      font-weight: 100 700;
-      font-display: swap;
-      src: url("assets/fonts/IBMPlexSans-Italic-Variable.woff2") format("woff2");
-    }
 
     :root {
-      color-scheme: light dark;
-      --page: #E4E9EF;
-      --card: #FFFFFF;
-      --ink: #15202B;
-      --muted: #5A6978;
-      --line: #D5DCE4;
-      --accent: #1A5FC2;
-      --button: #1A5FC2;
-      --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 16px 40px -16px rgba(16, 24, 40, .25);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --page: #0D131A;
-        --card: #161E27;
-        --ink: #E7EDF3;
-        --muted: #98A6B5;
-        --line: #273240;
-        --accent: #7AB4FF;
-        --button: #2B6FD6;
-        --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 16px 40px -16px rgba(0, 0, 0, .6);
-      }
+      color-scheme: dark;
+      --table: #17120F;
+      --table-lit: #4A3728;
+      --table-cool: #0C0F14;
+      --stock: #F3EEE3;
+      --stock-edge: #D9D1C1;
+      --ink: #3A332C;
+      --sheen-warm: rgba(255, 230, 200, .16);
+      --sheen-cool: rgba(207, 225, 255, .12);
+      --sheen-lilac: rgba(233, 215, 255, .14);
+      --caption: #F1EFEA;
+      --max: 12deg;
+      /* the card: 3.5 x 2 inches, never wider than the viewport, never so tall that the subtitle has no room */
+      --w: min(700px, calc(100vw - 24px), calc((100vh - 180px) * 7 / 4));
+      --w: min(700px, calc(100vw - 24px), calc((100dvh - 180px) * 7 / 4));
     }
 
     *, *::before, *::after { box-sizing: border-box; }
 
+    html, body { height: 100%; }
     body {
       margin: 0;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: grid;
-      place-items: center;
-      padding: 24px 16px;
-      background: var(--page);
-      color: var(--ink);
+      background: var(--table);
+      color: var(--caption);
       font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      font-size: 100%;
       line-height: 1.5;
-    }
-
-    /* The card: 3.5 x 2 inch proportions, photo slot left, details right */
-    .card {
-      width: 100%;
-      max-width: 700px;
-      aspect-ratio: 7 / 4;
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 36px;
-      align-items: center;
-      padding: 36px;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-    }
-
-    /* Photo slot */
-    .photo { margin: 0; min-width: 0; }
-    .photo button {
-      display: block;
-      position: relative;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      border-radius: 6px;
-      background: none;
-      color: inherit;
-      font: inherit;
-      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    .photo button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-    }
-    .photo img {
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 3 / 2;
-      object-fit: cover;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--line);
-      transition: opacity 200ms ease;
-    }
-    .photo img.is-fading { opacity: 0; }
-    .photo .fallback { display: none; }
-    .photo.is-missing img { visibility: hidden; }
-    .photo.is-missing .fallback {
+
+    /* The table: a dark surface with a warm spotlight that follows the pointer */
+    .scene {
+      --lx: 0;
+      --ly: 0;
+      position: relative;
       display: grid;
       place-items: center;
-      position: absolute;
-      inset: 0;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--page);
-      color: var(--muted);
-      font-size: 0.875rem;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px 12px 120px;
+      overflow: hidden;
+      background: linear-gradient(170deg, var(--table) 0%, var(--table) 55%, var(--table-cool) 100%);
     }
-    .photo figcaption {
-      margin-top: 10px;
-      font-size: 0.875rem;
-      font-style: italic;
-      line-height: 1.4;
-      color: var(--muted);
+    .light {
+      position: absolute;
+      top: -40%;
+      left: -40%;
+      width: 180%;
+      height: 180%;
+      background: radial-gradient(ellipse 40% 44% at 50% 46%, var(--table-lit) 0%, rgba(74, 55, 40, .7) 28%, rgba(74, 55, 40, .25) 52%, rgba(23, 18, 15, 0) 72%);
+      transform: translate(calc(var(--lx) * 9%), calc(var(--ly) * 7%));
+      will-change: transform;
+      pointer-events: none;
     }
 
-    /* Details */
-    .details { min-width: 0; }
+    /* The card's room: perspective and the pressure point live here, it is never transformed itself */
+    .wrap {
+      --mx: 0;
+      --my: 0;
+      --tilt: 0;
+      position: relative;
+      width: var(--w);
+      aspect-ratio: 7 / 4;
+      perspective: calc(var(--w) * 1.7);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .shadow {
+      position: absolute;
+      inset: 3% 3% 0;
+      border-radius: 4px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .42), 0 28px 64px 8px rgba(0, 0, 0, .6);
+      transform: translate(calc(var(--mx) * -14px), calc(var(--my) * -10px + 3%));
+      opacity: calc(.9 - var(--tilt) * .3);
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .card {
+      position: absolute;
+      inset: 0;
+      transform: rotateX(calc(var(--my) * -1 * var(--max))) rotateY(calc(var(--mx) * var(--max)));
+      will-change: transform;
+      opacity: 0;
+      transition: opacity 900ms ease-out;
+    }
+    .card.is-in { opacity: 1; }
+
+    /* The tasteful thickness: the stock's edge, peeking out on the side nearer the viewer */
+    .edge {
+      position: absolute;
+      inset: .5px;
+      background: var(--stock-edge);
+      transform: translate(calc(var(--mx) * -3px), calc(var(--my) * -3px));
+      pointer-events: none;
+    }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      isolation: isolate;
+      background: var(--stock);
+      color: var(--ink);
+      font-family: "Copperplate Local", "Copperplate CC", serif;
+      font-size: calc(var(--w) * .01);
+      font-variant-caps: small-caps;
+      font-kerning: normal;
+      letter-spacing: .05em;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow:
+        calc(var(--mx) * -.025em - .01em) calc(var(--my) * -.025em - .01em) 0 rgba(255, 255, 255, .55),
+        calc(var(--mx) * .02em + .01em) calc(var(--my) * .02em + .01em) 0 rgba(28, 20, 12, .18);
+    }
+    /* Paper grain: uncoated stock, a touch of tooth */
+    .face::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3  0 0 0 0 .25  0 0 0 0 .18  0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+      opacity: .16;
+      pointer-events: none;
+    }
+
+    .face > * { position: absolute; margin: 0; }
+
+    .email {
+      top: 7.5%;
+      left: 4.5%;
+      padding: .6em .5em .6em 0;
+      font-size: 3.9em;
+      font-weight: 300;
+      text-decoration: none;
+      color: inherit;
+    }
+    .firm {
+      top: 21%;
+      right: 4.5%;
+      text-align: right;
+    }
+    .firm b {
+      display: block;
+      font-size: 5em;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+    .firm span {
+      display: block;
+      margin-top: .2em;
+      font-size: 3.6em;
+      font-weight: 300;
+    }
     h1 {
-      margin: 0;
-      font-size: clamp(1.75rem, 4.5vw, 2.375rem);
-      font-weight: 600;
-      letter-spacing: -0.015em;
-      line-height: 1.1;
+      top: 51.5%;
+      left: 0;
+      right: 0;
+      font-size: 6.6em;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-align: center;
     }
     .role {
-      margin: 0.375rem 0 0;
-      font-size: 1rem;
-      color: var(--muted);
+      top: 61.5%;
+      left: 0;
+      right: 0;
+      font-size: 4.6em;
+      font-weight: 700;
+      text-align: center;
     }
     .links {
-      display: grid;
-      grid-template-columns: 5.5rem 1fr;
-      column-gap: 1rem;
-      row-gap: 0.5rem;
-      margin: 1.25rem 0 0;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--line);
-      font-size: 0.9375rem;
+      left: 4.5%;
+      right: 4.5%;
+      bottom: 5.5%;
+      font-size: 3.6em;
+      font-weight: 300;
     }
-    .links dt { color: var(--muted); }
-    .links dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+    .links ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      column-gap: 2.6em;
+      row-gap: .35em;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
     .links a {
-      color: var(--accent);
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.15em;
+      display: inline-block;
+      padding: .3em 0;
+      color: inherit;
+      text-decoration: none;
     }
-    .links a:hover { text-decoration-thickness: 2px; }
-    .links a:focus-visible {
-      outline: 2px solid var(--accent);
+    .face a:focus-visible {
+      outline: 2px solid var(--ink);
       outline-offset: 2px;
-      border-radius: 2px;
+    }
+    @media (hover: hover) {
+      .face a:hover {
+        text-decoration: underline;
+        text-decoration-thickness: .04em;
+        text-underline-offset: .18em;
+      }
     }
     /* Email: shown by CSS even without JS; JS replaces it with real, copyable text */
     .email:not(.is-ready)::after { content: attr(data-u) "\0040" attr(data-d); }
 
-    /* Ko-fi: a plain link styled like their button, nothing loaded from Ko-fi */
-    .kofi {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      min-height: 2.5rem;
-      margin-top: 1.5rem;
-      padding: 0 0.75rem;
-      border-radius: 7px;
-      background: var(--button);
-      color: #fff;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      text-decoration: none;
+    /* The watermark: only there when the card is tilted toward the light */
+    .watermark {
+      top: 12%;
+      left: 50%;
+      height: 76%;
+      width: auto;
+      transform: translateX(-50%);
+      opacity: clamp(0, (var(--tilt) - .55) / .45, 1);
+      will-change: opacity;
+      pointer-events: none;
     }
-    .kofi:hover { opacity: 0.85; }
-    .kofi:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
+    .watermark use { fill: currentColor; color: rgba(255, 255, 255, .62); }
+    .watermark .wm-shade { color: rgba(58, 51, 44, .075); }
+
+    /* Light on the face: a soft specular sheen and a mother-of-pearl band, both move with the tilt */
+    .sheen, .pearl {
+      position: absolute;
+      inset: -30%;
+      pointer-events: none;
+      will-change: transform, opacity;
     }
-    .kofi svg {
-      width: 1.375rem;
-      height: 1.375rem;
-      animation: kofi-wiggle 3s infinite;
+    .sheen {
+      background: radial-gradient(ellipse 36% 46% at 50% 50%, rgba(255, 255, 255, .34) 0%, rgba(255, 255, 255, .14) 38%, rgba(255, 255, 255, 0) 72%);
+      transform: translate(calc(var(--mx) * 28% + var(--lx) * 6%), calc(var(--my) * 26% + var(--ly) * 5%));
+      opacity: calc(.45 + var(--tilt) * .55);
     }
-    @keyframes kofi-wiggle {
-      0%, 60%, 100% { transform: none; }
-      75% { transform: scale(1.12); }
-      80% { transform: scale(1.1); }
-      84% { transform: rotate(-10deg) scale(1.1); }
-      88% { transform: rotate(10deg) scale(1.1); }
-      92% { transform: rotate(-10deg) scale(1.1); }
-      96% { transform: rotate(10deg) scale(1.1); }
+    .pearl {
+      background: linear-gradient(112deg,
+        rgba(255, 255, 255, 0) 30%,
+        var(--sheen-warm) 42%,
+        var(--sheen-lilac) 50%,
+        var(--sheen-cool) 58%,
+        rgba(255, 255, 255, 0) 70%);
+      transform: translate(calc(var(--mx) * -22% - var(--lx) * 4%), calc(var(--my) * -8%));
+      opacity: calc(var(--tilt) * .95);
     }
 
-    /* Portrait: below 720px the details column is too narrow, so the card stacks */
-    @media (max-width: 719px) {
-      .card {
-        grid-template-columns: 1fr;
-        aspect-ratio: auto;
-        gap: 24px;
-        padding: 24px;
-      }
-      .photo { max-width: 420px; }
+    /* Subtitles: a film's subtitle track, nothing else on the page talks */
+    .subtitle {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: clamp(18px, 7vh, 64px);
+      margin: 0;
+      min-height: 2.9em;
+      display: grid;
+      place-items: center;
+      font-size: clamp(15px, 1vw + 11px, 19px);
+      font-weight: 500;
+      letter-spacing: .01em;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 14px rgba(0, 0, 0, .6);
+      pointer-events: none;
     }
-    @media (max-width: 600px) {
-      .links {
-        grid-template-columns: max-content 1fr;
-        column-gap: 1rem;
-        row-gap: 0.75rem;
-      }
+    .subtitle span {
+      grid-area: 1 / 1;
+      max-width: 36ch;
+      opacity: 0;
+      transition: opacity 360ms ease;
     }
-    @media (max-width: 380px) {
-      .links { grid-template-columns: 1fr; row-gap: 0.125rem; }
-      .links dd + dt { margin-top: 0.625rem; }
-      .links dt { font-size: 0.8125rem; }
+    .subtitle span.is-on { opacity: 1; }
+
+    /* Phones: the card stays a landscape 7:4 card at about real size, small lines a touch larger */
+    @media (max-width: 599px) {
+      :root { --max: 10deg; }
+      .email { font-size: 5em; top: 6.5%; }
+      .firm { top: 22%; }
+      .firm b { font-size: 5.3em; }
+      .firm span { font-size: 4.2em; margin-top: .2em; }
+      h1 { font-size: 7em; top: 50.5%; }
+      .role { font-size: 4.9em; top: 61%; }
+      .links { font-size: 4.15em; bottom: 4.5%; left: 3.5%; right: 3.5%; }
+      .links ul { column-gap: 1.4em; row-gap: .1em; }
+      .links a { padding: .4em 0; }
+      .subtitle { bottom: 18px; font-size: 15px; }
     }
+
     @media (prefers-reduced-motion: reduce) {
-      .photo img { transition: none; }
-      .kofi svg { animation: none; }
+      :root { --max: 6deg; }
+      .card { transition: none; }
+      .subtitle span { transition: none; }
     }
   </style>
   <noscript>
-    <style>.photo button { display: none; }</style>
+    <style>.card { opacity: 1; } .subtitle { display: none; }</style>
   </noscript>
 </head>
 <body>
-  <main class="card">
-    <figure class="photo">
-      <button type="button" aria-label="Show another cat">
-        <img id="cat" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="A cat, standing in for a profile photo" width="600" height="400">
-        <span class="fallback" aria-hidden="true">404: cat not found</span>
-      </button>
-      <noscript>
-        <img src="https://placecats.com/neo/600/400" alt="A cat, standing in for a profile photo" width="600" height="400">
-      </noscript>
-      <figcaption aria-live="polite">Not me.</figcaption>
-    </figure>
-    <section class="details">
-      <h1>Richard Kollar</h1>
-      <p class="role">Software Architecture &amp; Engineering</p>
-      <dl class="links">
-        <dt>GitHub</dt><dd><a href="https://github.com/Shawoll" rel="me">Shawoll</a></dd>
-        <dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/richard-koll%C3%A1r-704267132/" rel="me">Richard Kollar</a></dd>
-        <dt>X</dt><dd><a href="https://x.com/Richard_Kollar" rel="me">@Richard_Kollar</a></dd>
-        <dt>Email</dt><dd><a class="email" href="#" data-u="richardkollar" data-d="protonmail.com" aria-label="Email Richard"></a></dd>
-      </dl>
-      <a class="kofi" href="https://ko-fi.com/A6H428CUW3" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208M11.351 4.662c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26M17.898 6.949c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026"/>
-          <path fill="#FF6433" d="M7.507 7.131c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/>
-        </svg>
-        Support me on Ko-fi
-      </a>
-    </section>
-  </main>
+  <div class="scene">
+    <div class="light" aria-hidden="true"></div>
+    <main class="wrap">
+      <div class="shadow" aria-hidden="true"></div>
+      <div class="card">
+        <div class="edge" aria-hidden="true"></div>
+        <article class="face">
+          <svg class="watermark" viewBox="0 0 200 210" aria-hidden="true" focusable="false">
+            <defs>
+              <g id="cat">
+                <path class="tail" d="M156 160 C 194 162 198 198 150 195 C 130 194 118 190 104 188" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"/>
+                <ellipse cx="112" cy="138" rx="52" ry="46"/>
+                <ellipse cx="84" cy="106" rx="28" ry="30"/>
+                <rect x="63" y="128" width="25" height="56" rx="11"/>
+                <circle cx="70" cy="62" r="27"/>
+                <path d="M47 47 L39 12 L66 35 Z"/>
+                <path d="M93 47 L101 12 L74 35 Z"/>
+              </g>
+            </defs>
+            <use href="#cat" class="wm-shade" x="1.6" y="1.6"/>
+            <use href="#cat" class="wm-light"/>
+          </svg>
+          <a class="email" href="#" data-u="richardkollar" data-d="protonmail.com" aria-label="Email Richard"></a>
+          <p class="firm"><b>Kollar &amp; Kollar</b><span>Software Architecture and Engineering</span></p>
+          <h1>Richard Kollar</h1>
+          <p class="role">Software Architect</p>
+          <nav class="links" aria-label="Contact">
+            <ul>
+              <li><a href="https://github.com/Shawoll" rel="me">GitHub Shawoll</a></li>
+              <li><a href="https://www.linkedin.com/in/richard-koll%C3%A1r-704267132/" rel="me">LinkedIn Richard Kollar</a></li>
+              <li><a href="https://x.com/Richard_Kollar" rel="me">X @Richard_Kollar</a></li>
+              <li><a href="https://ko-fi.com/A6H428CUW3" target="_blank" rel="noopener">Ko-fi A6H428CUW3</a></li>
+            </ul>
+          </nav>
+          <div class="pearl" aria-hidden="true"></div>
+          <div class="sheen" aria-hidden="true"></div>
+        </article>
+      </div>
+    </main>
+    <p class="subtitle" aria-hidden="true"><span></span><span></span></p>
+  </div>
 
   <script>
     (function () {
-      var cats = [
-        "https://placecats.com/600/400",
-        "https://placecats.com/neo/600/400",
-        "https://placecats.com/millie/600/400",
-        "https://placecats.com/millie_neo/600/400",
-        "https://placecats.com/neo_banana/600/400",
-        "https://placecats.com/neo_2/600/400",
-        "https://placecats.com/bella/600/400",
-        "https://placecats.com/poppy/600/400",
-        "https://placecats.com/louie/600/400",
-        "https://placecats.com/g/600/400"
-      ];
-      var captions = [
-        "Not me. Click for another cat.",
-        "Still not me.",
-        "Also not me.",
-        "Definitely not me.",
-        "Okay, this one might be me."
-      ];
-
-      var figure = document.querySelector(".photo");
-      var button = figure.querySelector("button");
-      var img = document.getElementById("cat");
-      var caption = figure.querySelector("figcaption");
-      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      var current = Math.floor(Math.random() * cats.length);
-      var clicks = 0;
-
-      function show(index) {
-        current = index;
-        figure.classList.remove("is-missing");
-        img.src = cats[index];
-      }
-
-      function next() {
-        var index = Math.floor(Math.random() * (cats.length - 1));
-        if (index >= current) { index += 1; }
-        clicks += 1;
-        caption.textContent = captions[clicks % captions.length];
-        if (reduceMotion) { show(index); return; }
-        img.classList.add("is-fading");
-        setTimeout(function () { show(index); }, 200);
-      }
-
-      img.addEventListener("load", function () { img.classList.remove("is-fading"); });
-      img.addEventListener("error", function () {
-        figure.classList.add("is-missing");
-        img.classList.remove("is-fading");
-        caption.textContent = "The cat server is napping.";
-      });
-      button.addEventListener("click", next);
-
-      caption.textContent = captions[0];
-      show(current);
+      "use strict";
+      var scene = document.querySelector(".scene");
+      var wrap = document.querySelector(".wrap");
+      var card = document.querySelector(".card");
+      var subtitle = document.querySelector(".subtitle");
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
       // Email: assembled here so the address never appears in the source
       var email = document.querySelector(".email");
       var user = email.getAttribute("data-u");
       var domain = email.getAttribute("data-d");
       email.href = "mailto:" + user + "@" + domain;
-      email.textContent = "";
-      email.appendChild(document.createTextNode(user));
-      email.appendChild(document.createElement("wbr"));
-      email.appendChild(document.createTextNode("@" + domain));
+      email.textContent = user + "@" + domain;
       email.removeAttribute("aria-label");
       email.classList.add("is-ready");
 
+      // --- Motion: one damped spring per value, frame-rate independent ---
+      function Spring(x, w, z) { this.x = x; this.v = 0; this.t = x; this.w = w; this.z = z; }
+      Spring.prototype.step = function (dt) {
+        while (dt > 0) {
+          var h = Math.min(dt, 1 / 120);
+          dt -= h;
+          this.v += (-this.w * this.w * (this.x - this.t) - 2 * this.z * this.w * this.v) * h;
+          this.x += this.v * h;
+        }
+      };
+      Spring.prototype.tune = function (w, z) { this.w = w; this.z = z; };
+      Spring.prototype.settled = function () { return Math.abs(this.x - this.t) < 5e-4 && Math.abs(this.v) < 2e-3; };
+
+      var sx = new Spring(0, 14, 1), sy = new Spring(0, 14, 1);   // pressure point on the card, -1..1
+      var lx = new Spring(0, 7, 1), ly = new Spring(0, 7, 1);     // spotlight on the table, -1..1
+      var state = "rest";                                         // rest | idle | pointer | gyro
+      var raf = 0, running = false, last = 0;
+      var lastMove = -1e9, idleTimer = 0, settledOnce = false;
+      var hover = false, pressing = false, rect = null;
+      var gyroLive = false, gyroAsked = false, ref = null;
+      var written = {};
+
+      function clamp(v) { return v < -1 ? -1 : v > 1 ? 1 : v; }
+      function measure() { rect = wrap.getBoundingClientRect(); }
+      function write(el, name, value) {
+        var v = value.toFixed(4);
+        if (written[name] === v) { return; }
+        written[name] = v;
+        el.style.setProperty(name, v);
+      }
+      function start() {
+        running = true;
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+      }
+      function tracking() { sx.tune(14, 1); sy.tune(14, 1); }
+      function releasing() { sx.tune(9, .62); sy.tune(9, .62); }
+
+      function rest() {
+        state = "rest";
+        sx.t = 0; sy.t = 0;
+        releasing();
+        clearTimeout(idleTimer);
+        if (!reduce.matches && !gyroLive) {
+          idleTimer = setTimeout(function () {
+            if (state === "rest" && !hover && !pressing) { state = "idle"; tracking(); start(); }
+          }, 2500);
+        }
+        start();
+      }
+
+      function frame(now) {
+        raf = 0;
+        if (!running) { return; }
+        var dt = Math.min(64, now - last) / 1000;
+        last = now;
+        if (state === "idle") {
+          var t = now / 1000;
+          sx.t = .3 * Math.sin(t / 2.7);
+          sy.t = .3 * Math.sin(t / 3.9 + 1);
+        }
+        if (now - lastMove > 2500) { lx.t = sx.x * .6; ly.t = sy.x * .6; }
+        sx.step(dt); sy.step(dt); lx.step(dt); ly.step(dt);
+        var tilt = Math.min(1, Math.sqrt(sx.x * sx.x + sy.x * sy.x));
+        write(wrap, "--mx", sx.x);
+        write(wrap, "--my", sy.x);
+        write(wrap, "--tilt", tilt);
+        write(scene, "--lx", lx.x);
+        write(scene, "--ly", ly.x);
+        if (tilt > .85) { say(3); } else if (tilt > .5) { say(2); }
+        if (state === "rest" && sx.settled() && sy.settled() && lx.settled() && ly.settled()) {
+          if (!settledOnce) { settledOnce = true; tracking(); say(0); rest(); }
+          running = false;
+          return;
+        }
+        raf = requestAnimationFrame(frame);
+      }
+
+      // --- Pointer: over the card presses a corner, anywhere moves the light ---
+      function press(e) {
+        if (!rect) { measure(); }
+        sx.t = clamp(((e.clientX - rect.left) / rect.width) * 2 - 1);
+        sy.t = clamp(((e.clientY - rect.top) / rect.height) * 2 - 1);
+        state = "pointer";
+        tracking();
+        clearTimeout(idleTimer);
+        say(1);
+        start();
+      }
+      wrap.addEventListener("pointerenter", function (e) {
+        measure();
+        if (e.pointerType === "mouse") { hover = true; press(e); }
+      });
+      wrap.addEventListener("pointerdown", function (e) {
+        if (e.pointerType !== "mouse") { pressing = true; press(e); }
+      });
+      wrap.addEventListener("pointermove", function (e) {
+        if (hover || pressing) { press(e); }
+      });
+      function release(e) {
+        if (e.pointerType === "mouse") { if (e.type !== "pointerleave") { return; } hover = false; }
+        else { pressing = false; }
+        if (gyroLive) { state = "gyro"; tracking(); return; }
+        rest();
+      }
+      wrap.addEventListener("pointerleave", release);
+      wrap.addEventListener("pointerup", release);
+      wrap.addEventListener("pointercancel", release);
+      document.addEventListener("pointermove", function (e) {
+        lastMove = performance.now();
+        lx.t = clamp((e.clientX / window.innerWidth) * 2 - 1);
+        ly.t = clamp((e.clientY / window.innerHeight) * 2 - 1);
+        start();
+      }, { passive: true });
+
+      if ("ResizeObserver" in window) { new ResizeObserver(measure).observe(wrap); }
+      window.addEventListener("resize", measure);
+      window.addEventListener("scroll", measure, { passive: true });
+
+      // --- Gyroscope: the card lies on the phone; iOS asks on the first tap on the card ---
+      function orient(e) {
+        if (e.beta == null || e.gamma == null) { return; }
+        var now = performance.now();
+        var angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+        if (!ref) { ref = { b: e.beta, g: e.gamma, t: now }; }
+        var k = 1 - Math.exp(-(now - ref.t) / 6000);     // slow re-centre on how the phone is held
+        ref.b += (e.beta - ref.b) * k;
+        ref.g += (e.gamma - ref.g) * k;
+        ref.t = now;
+        var db = e.beta - ref.b, dg = e.gamma - ref.g, ex, ey;
+        if (angle === 90) { ex = db; ey = -dg; }
+        else if (angle === 180 || angle === -180) { ex = -dg; ey = -db; }
+        else if (angle === 270 || angle === -90) { ex = -db; ey = dg; }
+        else { ex = dg; ey = db; }
+        if (!gyroLive && Math.abs(ex) + Math.abs(ey) < 1.5) { return; }
+        gyroLive = true;
+        clearTimeout(idleTimer);
+        if (hover || pressing) { return; }
+        state = "gyro";
+        tracking();
+        sx.t = clamp(ex / 22);
+        sy.t = clamp(ey / 22);
+        start();
+      }
+      function listenGyro() { window.addEventListener("deviceorientation", orient); }
+      var needsAsk = "DeviceOrientationEvent" in window && typeof DeviceOrientationEvent.requestPermission === "function";
+      if ("DeviceOrientationEvent" in window && !needsAsk && !reduce.matches) { listenGyro(); }
+      if (needsAsk) {
+        wrap.addEventListener("pointerup", function (e) {
+          if (gyroAsked || reduce.matches || e.pointerType === "mouse" || e.target.closest("a")) { return; }
+          gyroAsked = true;
+          DeviceOrientationEvent.requestPermission().then(function (r) {
+            if (r === "granted") { listenGyro(); }
+          }).catch(function () {});
+        });
+      }
+
+      // --- Subtitles: each line once, in order, never less than 1.8 s apart ---
+      var lines = [
+        "Let's see Paul Allen's card.",
+        "Look at that subtle off-white coloring.",
+        "The tasteful thickness of it.",
+        "Oh my God. It even has a watermark.",
+        "Is something wrong, Patrick? You're sweating."
+      ];
+      var spans = subtitle.querySelectorAll("span");
+      var said = [], queue = [], cur = 0, shownAt = -1e9, pumpTimer = 0, hideTimer = 0;
+      function say(i) {
+        for (var j = 0; j <= i; j += 1) {
+          if (!said[j]) { said[j] = true; queue.push(j); }
+        }
+        pump();
+      }
+      function pump() {
+        clearTimeout(pumpTimer);
+        if (!queue.length) { return; }
+        var wait = shownAt + 1800 - performance.now();
+        if (wait > 0) { pumpTimer = setTimeout(pump, wait); return; }
+        var i = queue.shift();
+        var next = spans[1 - cur];
+        next.textContent = lines[i];
+        next.classList.add("is-on");
+        spans[cur].classList.remove("is-on");
+        cur = 1 - cur;
+        shownAt = performance.now();
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(function () { next.classList.remove("is-on"); }, 3800);
+        if (i === 3) { setTimeout(function () { say(4); }, 4000); }
+        if (queue.length) { pumpTimer = setTimeout(pump, 1800); }
+      }
+
+      // --- Housekeeping ---
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) { running = false; }
+        else { start(); }
+      });
+      reduce.addEventListener("change", function () {
+        if (reduce.matches) {
+          window.removeEventListener("deviceorientation", orient);
+          gyroLive = false;
+          if (state === "idle" || state === "gyro") { rest(); }
+        } else if (state === "rest") { rest(); }
+      });
+
+      // --- Entrance: the card settles onto the table ---
+      measure();
+      if (!reduce.matches) {
+        sx.x = -.55; sy.x = -.42;
+        sx.tune(5, .9); sy.tune(5, .9);
+      }
+      card.classList.add("is-in");
+      start();
+
       console.log(
-        "Hi. One HTML file, no build step, one random cat.\n" +
+        "Hi. One HTML file, no build step, one business card.\n" +
+        "The previous page lives on at /classic/.\n" +
         "Source: https://github.com/Shawoll/richardkollar"
       );
     })();
