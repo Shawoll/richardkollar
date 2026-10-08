@@ -1,130 +1,328 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Contact Card - Richard Kollar</title>
-      <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-      body {
-        margin: 0;
-        background-image: linear-gradient(45deg, #4c4c4c, #009fff, #4c4c4c);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Richard Kollar</title>
+  <meta name="description" content="Richard Kollar, software architecture and engineering. Find me on GitHub, LinkedIn and X, or send an email.">
+  <link rel="canonical" href="https://richardkollar.sk/">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#E4E9EF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0D131A" media="(prefers-color-scheme: dark)">
 
-      @keyframes gradient {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Richard Kollar">
+  <meta property="og:description" content="Software Architecture &amp; Engineering">
+  <meta property="og:url" content="https://richardkollar.sk/">
+  <meta property="og:site_name" content="richardkollar.sk">
+  <meta property="og:image" content="https://placecats.com/neo/1200/630">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A cat, standing in for a profile photo">
+  <meta property="profile:first_name" content="Richard">
+  <meta property="profile:last_name" content="Kollar">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Richard_Kollar">
+  <meta name="twitter:title" content="Richard Kollar">
+  <meta name="twitter:description" content="Software Architecture &amp; Engineering">
+  <meta name="twitter:image" content="https://placecats.com/neo/1200/630">
+  <meta name="twitter:image:alt" content="A cat, standing in for a profile photo">
 
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="preload" href="fonts/IBMPlexSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+
+  <style>
+    @font-face {
+      font-family: "IBM Plex Sans";
+      font-style: normal;
+      font-weight: 100 700;
+      font-display: swap;
+      src: url("fonts/IBMPlexSans-Variable.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "IBM Plex Sans";
+      font-style: italic;
+      font-weight: 100 700;
+      font-display: swap;
+      src: url("fonts/IBMPlexSans-Italic-Variable.woff2") format("woff2");
+    }
+
+    :root {
+      color-scheme: light dark;
+      --page: #E4E9EF;
+      --card: #FFFFFF;
+      --ink: #15202B;
+      --muted: #5A6978;
+      --line: #D5DCE4;
+      --accent: #1A5FC2;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 16px 40px -16px rgba(16, 24, 40, .25);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #0D131A;
+        --card: #161E27;
+        --ink: #E7EDF3;
+        --muted: #98A6B5;
+        --line: #273240;
+        --accent: #7AB4FF;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 16px 40px -16px rgba(0, 0, 0, .6);
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: 100%;
+      line-height: 1.5;
+    }
+
+    /* The card: 3.5 x 2 inch proportions, photo slot left, details right */
+    .card {
+      width: 100%;
+      max-width: 700px;
+      aspect-ratio: 7 / 4;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 36px;
+      align-items: center;
+      padding: 36px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Photo slot */
+    .photo { margin: 0; min-width: 0; }
+    .photo button {
+      display: block;
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 6px;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .photo button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .photo img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--line);
+      transition: opacity 200ms ease;
+    }
+    .photo img.is-fading { opacity: 0; }
+    .photo .fallback { display: none; }
+    .photo.is-missing img { visibility: hidden; }
+    .photo.is-missing .fallback {
+      display: grid;
+      place-items: center;
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--page);
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+    .photo figcaption {
+      margin-top: 10px;
+      font-size: 0.875rem;
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    /* Details */
+    .details { min-width: 0; }
+    h1 {
+      margin: 0;
+      font-size: clamp(1.75rem, 4.5vw, 2.375rem);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+    }
+    .role {
+      margin: 0.375rem 0 0;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+    .links {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      column-gap: 1rem;
+      row-gap: 0.5rem;
+      margin: 1.25rem 0 0;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.9375rem;
+    }
+    .links dt { color: var(--muted); }
+    .links dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+    .links a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.15em;
+    }
+    .links a:hover { text-decoration-thickness: 2px; }
+    .links a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+    /* Email: shown by CSS even without JS; JS replaces it with real, copyable text */
+    .email:not(.is-ready)::after { content: attr(data-u) "\0040" attr(data-d); }
+
+    /* Portrait: below 720px the details column is too narrow, so the card stacks */
+    @media (max-width: 719px) {
       .card {
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        padding: 30px;
-        text-align: center;
-        max-width: 600px;
-        width: 90%;
-        overflow: hidden;
+        grid-template-columns: 1fr;
+        aspect-ratio: auto;
+        gap: 24px;
+        padding: 24px;
       }
-
-      .card h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
+      .photo { max-width: 420px; }
+    }
+    @media (max-width: 600px) {
+      .links {
+        grid-template-columns: max-content 1fr;
+        column-gap: 1rem;
+        row-gap: 0.75rem;
       }
-
-      .card p {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
-      }
-
-      .card ul {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 30px;
-      }
-
-      .card ul li {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-        position: relative;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: Arial, sans-serif;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-      }
-
-      .card ul li:hover {
-        color: #ffffff;
-        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-      }
-
-      .card ul li:hover::after {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        z-index: -1;
-        border-radius: 5px;
-      }
-
-      .card ul li:hover.twitter::after {
-        background-image: repeating-linear-gradient(-45deg, #00acee, #00acee 10px, #1DA1F2 10px, #1DA1F2 20px);
-      }
-
-      .card ul li:hover.linkedin::after {
-        background-image: repeating-linear-gradient(-45deg, #0077B5, #0077B5 10px, #0e76a8 10px, #0e76a8 20px);
-      }
-
-      .card ul li a {
-        color: inherit;
-        text-decoration: none;
-        font-weight: bold;
-        font-family: Arial, sans-serif;
-      }
-    </style>
-  </head>
-   <body>
-    <div class="card">
-      <img id="kittenImage" src="" alt="Profile Picture">
+    }
+    @media (max-width: 380px) {
+      .links { grid-template-columns: 1fr; row-gap: 0.125rem; }
+      .links dd + dt { margin-top: 0.625rem; }
+      .links dt { font-size: 0.8125rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .photo img { transition: none; }
+    }
+  </style>
+  <noscript>
+    <style>.photo button { display: none; }</style>
+  </noscript>
+</head>
+<body>
+  <main class="card">
+    <figure class="photo">
+      <button type="button" aria-label="Show another cat">
+        <img id="cat" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="A cat, standing in for a profile photo" width="600" height="400">
+        <span class="fallback" aria-hidden="true">404: cat not found</span>
+      </button>
+      <noscript>
+        <img src="https://placecats.com/neo/600/400" alt="A cat, standing in for a profile photo" width="600" height="400">
+      </noscript>
+      <figcaption aria-live="polite">Not me.</figcaption>
+    </figure>
+    <section class="details">
       <h1>Richard Kollar</h1>
-      <ul class="contact-info">
-        <li>Twitter: <a href="https://twitter.com/Richard_Kollar" target="_blank" rel="noopener noreferrer">@Richard_Kollar</a></li>
-        <li>LinkedIn: <a href="https://www.linkedin.com/in/richard-kollár-704267132/" target="_blank" rel="noopener noreferrer">Richard Kollar</a></li>
-      </ul>
-    </div> 
+      <p class="role">Software Architecture &amp; Engineering</p>
+      <dl class="links">
+        <dt>GitHub</dt><dd><a href="https://github.com/Shawoll" rel="me">Shawoll</a></dd>
+        <dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/richard-koll%C3%A1r-704267132/" rel="me">Richard Kollar</a></dd>
+        <dt>X</dt><dd><a href="https://x.com/Richard_Kollar" rel="me">@Richard_Kollar</a></dd>
+        <dt>Email</dt><dd><a class="email" href="#" data-u="richardkollar" data-d="protonmail.com" aria-label="Email Richard"></a></dd>
+      </dl>
+    </section>
+  </main>
 
-    <script>
-      const kittenImages = [
-        "https://placecats.com/300/200",
-        "https://placecats.com/neo/300/200",
-        "https://placecats.com/millie/300/150",
-        "https://placecats.com/millie_neo/300/200",
-        "https://placecats.com/neo_banana/300/200",
-        "https://placecats.com/neo_2/300/200",
-        "https://placecats.com/bella/300/200",
-        "https://placecats.com/poppy/300/200",
-        "https://placecats.com/louie/300/200",
-        "https://placecats.com/g/300/200"
+  <script>
+    (function () {
+      var cats = [
+        "https://placecats.com/600/400",
+        "https://placecats.com/neo/600/400",
+        "https://placecats.com/millie/600/400",
+        "https://placecats.com/millie_neo/600/400",
+        "https://placecats.com/neo_banana/600/400",
+        "https://placecats.com/neo_2/600/400",
+        "https://placecats.com/bella/600/400",
+        "https://placecats.com/poppy/600/400",
+        "https://placecats.com/louie/600/400",
+        "https://placecats.com/g/600/400"
+      ];
+      var captions = [
+        "Not me. Click for another cat.",
+        "Still not me.",
+        "Also not me.",
+        "Definitely not me.",
+        "Okay, this one might be me."
       ];
 
-      const img = document.getElementById('kittenImage');
-      const randomIndex = Math.floor(Math.random() * kittenImages.length);
-      img.src = kittenImages[randomIndex];
-    </script>
-  </body>
+      var figure = document.querySelector(".photo");
+      var button = figure.querySelector("button");
+      var img = document.getElementById("cat");
+      var caption = figure.querySelector("figcaption");
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var current = Math.floor(Math.random() * cats.length);
+      var clicks = 0;
+
+      function show(index) {
+        current = index;
+        figure.classList.remove("is-missing");
+        img.src = cats[index];
+      }
+
+      function next() {
+        var index = Math.floor(Math.random() * (cats.length - 1));
+        if (index >= current) { index += 1; }
+        clicks += 1;
+        caption.textContent = captions[clicks % captions.length];
+        if (reduceMotion) { show(index); return; }
+        img.classList.add("is-fading");
+        setTimeout(function () { show(index); }, 200);
+      }
+
+      img.addEventListener("load", function () { img.classList.remove("is-fading"); });
+      img.addEventListener("error", function () {
+        figure.classList.add("is-missing");
+        img.classList.remove("is-fading");
+        caption.textContent = "The cat server is napping.";
+      });
+      button.addEventListener("click", next);
+
+      caption.textContent = captions[0];
+      show(current);
+
+      // Email: assembled here so the address never appears in the source
+      var email = document.querySelector(".email");
+      var user = email.getAttribute("data-u");
+      var domain = email.getAttribute("data-d");
+      email.href = "mailto:" + user + "@" + domain;
+      email.textContent = "";
+      email.appendChild(document.createTextNode(user));
+      email.appendChild(document.createElement("wbr"));
+      email.appendChild(document.createTextNode("@" + domain));
+      email.removeAttribute("aria-label");
+      email.classList.add("is-ready");
+
+      console.log(
+        "Hi. One HTML file, no build step, one random cat.\n" +
+        "Source: https://github.com/Shawoll/richardkollar"
+      );
+    })();
+  </script>
+</body>
 </html>
