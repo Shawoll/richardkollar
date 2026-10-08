@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Richard Kollar</title>
-  <meta name="description" content="Richard Kollar, software architecture and engineering. Find me on GitHub, LinkedIn and X, or send an email.">
+  <meta name="description" content="Richard Kollar, software architecture and engineering: system design, Java, C#, PHP and JavaScript. Find me on GitHub, LinkedIn and X, or send an email.">
   <link rel="canonical" href="https://richardkollar.sk/">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#17120F">
@@ -81,9 +81,10 @@
       --sheen-lilac: rgba(233, 215, 255, .14);
       --caption: #F1EFEA;
       --max: 12deg;
-      /* the card: 3.5 x 2 inches, never wider than the viewport, never so tall that the subtitle has no room */
-      --w: min(700px, calc(100vw - 24px), calc((100vh - 180px) * 7 / 4));
-      --w: min(700px, calc(100vw - 24px), calc((100dvh - 180px) * 7 / 4));
+      /* the card: 3.5 x 2 inches, never wider than the viewport, never so tall that the button and the subtitle have no room */
+      --w: min(700px, calc(100vw - 24px), calc((86vh - 130px) * 7 / 4));
+      --w: min(700px, calc(100vw - 24px), calc((86dvh - 130px) * 7 / 4));
+      --th: max(2px, calc(var(--w) * .006));   /* the stock's thickness */
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -123,48 +124,85 @@
       pointer-events: none;
     }
 
-    /* The card's room: perspective and the pressure point live here, it is never transformed itself */
+    /* The card and the button under it share one cell; the stage fades in as a whole */
+    .stage {
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transition: opacity 900ms ease-out;
+    }
+    .stage.is-in { opacity: 1; }
+
+    /* The card's room: perspective, the pressure point and the turn live here, it is never transformed itself */
     .wrap {
       --mx: 0;
       --my: 0;
       --tilt: 0;
+      --fl: 0;      /* the turn, in half-turns: even shows the front, odd the back */
+      --fc: 1;      /* its cosine and sine */
+      --fs: 0;
+      --lift: 0;    /* how far the card is off the table mid-turn, 0..1 */
+      grid-area: 1 / 1;
       position: relative;
+      z-index: 1;
       width: var(--w);
       aspect-ratio: 7 / 4;
-      perspective: calc(var(--w) * 1.7);
+      /* flatter while turning, so the near edge does not balloon toward the viewer */
+      perspective: calc(var(--w) * (1.7 + 1.5 * var(--lift)));
+      cursor: pointer;
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
     }
 
+    /* Mid-turn the card rises off the table: its shadow narrows, drops and fades,
+       and fills in where the narrowing card no longer covers it */
     .shadow {
       position: absolute;
       inset: 3% 3% 0;
       border-radius: 4px;
+      background: rgba(0, 0, 0, calc(var(--lift) * .55));
       box-shadow: 0 8px 22px rgba(0, 0, 0, .42), 0 28px 64px 8px rgba(0, 0, 0, .6);
-      transform: translate(calc(var(--mx) * -14px), calc(var(--my) * -10px + 3%));
-      opacity: calc(.9 - var(--tilt) * .3);
+      transform: translate(calc(var(--mx) * -14px), calc(var(--my) * -10px + 3% + var(--lift) * 5%)) scaleX(max(.25, var(--fc), -1 * var(--fc)));
+      opacity: calc(.9 - var(--tilt) * .3 - var(--lift) * .35);
       will-change: transform, opacity;
       pointer-events: none;
     }
 
+    /* The card turns about its middle and the face toward the viewer sits at z = 0, so its text stays crisp.
+       Nothing here may flatten the 3D: no opacity, filter, overflow, isolation, clip-path, mask or contain. */
     .card {
       position: absolute;
       inset: 0;
-      transform: rotateX(calc(var(--my) * -1 * var(--max))) rotateY(calc(var(--mx) * var(--max)));
+      transform-style: preserve-3d;
+      transform: translateZ(calc(var(--th) / -2)) rotateX(calc(var(--my) * -1 * var(--max))) rotateY(calc(var(--mx) * var(--max) + var(--fl) * 180deg));
       will-change: transform;
-      opacity: 0;
-      transition: opacity 900ms ease-out;
     }
-    .card.is-in { opacity: 1; }
 
     /* The tasteful thickness: the stock's edge, peeking out on the side nearer the viewer */
     .edge {
       position: absolute;
       inset: .5px;
       background: var(--stock-edge);
-      transform: translate(calc(var(--mx) * -3px), calc(var(--my) * -3px));
+      transform: translate(calc(var(--mx) * var(--fc) * -3px), calc(var(--my) * -3px));
       pointer-events: none;
+    }
+    /* ...and its left and right sides, seen as the card turns over */
+    .rim {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(var(--th) / -2);
+      width: var(--th);
+      background: var(--stock-edge);
+      transform: rotateY(-90deg);
+      backface-visibility: hidden;
+      pointer-events: none;
+    }
+    .rim + .rim {
+      left: auto;
+      right: calc(var(--th) / -2);
+      transform: rotateY(90deg);
     }
 
     .face {
@@ -195,10 +233,25 @@
       opacity: .16;
       pointer-events: none;
     }
+    /* Going edge-on, a face turns away from the light */
+    .face::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--table);
+      opacity: calc(var(--lift) * .35);
+      pointer-events: none;
+    }
+    .front { transform: translateZ(calc(var(--th) / 2)); }
+    .back { transform: rotateY(180deg) translateZ(calc(var(--th) / 2)); }
+    /* Only the face toward the viewer is there: for painting, the pointer, focus, find-in-page and screen readers */
+    .card[data-side="front"] .back,
+    .card[data-side="back"] .front { visibility: hidden; }
 
     .face > * { position: absolute; margin: 0; }
 
-    .email {
+    /* The back mirrors the front: each line takes the slot of its counterpart */
+    .email, .langs {
       top: 7.5%;
       left: 4.5%;
       padding: .6em .5em .6em 0;
@@ -206,6 +259,15 @@
       font-weight: 300;
       text-decoration: none;
       color: inherit;
+    }
+    .langs {
+      display: flex;
+      list-style: none;
+    }
+    .langs li + li::before {
+      content: "·";
+      content: "·" / "";
+      margin: 0 .4em;
     }
     .dept {
       top: 19%;
@@ -215,7 +277,7 @@
       line-height: 1.25;
       text-align: center;
     }
-    h1 {
+    h1, h2 {
       top: 49%;
       left: 0;
       right: 0;
@@ -232,14 +294,14 @@
       font-weight: 700;
       text-align: center;
     }
-    .links {
+    .links, .craft {
       left: 4.5%;
       right: 4.5%;
       bottom: 5.5%;
       font-size: 3.4em;
       font-weight: 300;
     }
-    .links ul {
+    .links ul, .craft {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -249,7 +311,7 @@
       padding: 0;
       list-style: none;
     }
-    .links a {
+    .links a, .craft li {
       display: inline-block;
       padding: .3em 0;
       color: inherit;
@@ -283,17 +345,22 @@
     .watermark use { fill: currentColor; color: rgba(255, 255, 255, .62); }
     .watermark .wm-shade { color: rgba(58, 51, 44, .075); }
 
-    /* Light on the face: a soft specular sheen and a mother-of-pearl band, both move with the tilt */
+    /* Light on the face: a soft specular sheen and a mother-of-pearl band, both move with the tilt,
+       and the sheen sweeps across as the card turns */
     .sheen, .pearl {
       position: absolute;
       inset: -30%;
+      z-index: 1;
       pointer-events: none;
       will-change: transform, opacity;
     }
     .sheen {
       background: radial-gradient(ellipse 36% 46% at 50% 50%, rgba(255, 255, 255, .34) 0%, rgba(255, 255, 255, .14) 38%, rgba(255, 255, 255, 0) 72%);
-      transform: translate(calc(var(--mx) * 28% + var(--lx) * 6%), calc(var(--my) * 26% + var(--ly) * 5%));
+      transform: translate(calc(var(--mx) * 28% + var(--lx) * 6% + var(--fs) * 60%), calc(var(--my) * 26% + var(--ly) * 5%));
       opacity: calc(.45 + var(--tilt) * .55);
+    }
+    .back .sheen {
+      transform: translate(calc(var(--mx) * 28% + var(--lx) * 6% - var(--fs) * 60%), calc(var(--my) * 26% + var(--ly) * 5%));
     }
     .pearl {
       background: linear-gradient(112deg,
@@ -304,6 +371,46 @@
         rgba(255, 255, 255, 0) 70%);
       transform: translate(calc(var(--mx) * -22% - var(--lx) * 4%), calc(var(--my) * -8%));
       opacity: calc(var(--tilt) * .95);
+    }
+
+    /* The hint: a quiet button under the card, in the subtitle's type */
+    .turn {
+      grid-area: 1 / 1;
+      translate: 0 calc(var(--w) * 2 / 7 + 28px);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 22px;
+      background: none;
+      color: rgba(241, 239, 234, .6);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: color 200ms ease;
+    }
+    .turn[hidden] { display: none; }
+    .turn svg {
+      flex: none;
+      width: 14px;
+      height: 14px;
+      transition: scale 400ms ease;
+    }
+    .turn.is-back svg { scale: -1 1; }
+    .turn:focus-visible {
+      color: var(--caption);
+      outline: 1px solid currentColor;
+      outline-offset: 0;
+    }
+    @media (hover: hover) {
+      .turn:hover { color: var(--caption); }
     }
 
     /* Subtitles: a film's subtitle track, nothing else on the page talks */
@@ -334,65 +441,97 @@
     /* Phones: the card stays a landscape 7:4 card at about real size, small lines a touch larger */
     @media (max-width: 599px) {
       :root { --max: 10deg; }
-      .email { font-size: 4.8em; top: 6.5%; }
+      .email, .langs { font-size: 4.8em; top: 6.5%; }
       .dept { font-size: 4em; top: 18%; line-height: 1.2; }
-      h1 { font-size: 6.2em; top: 47.5%; }
+      h1, h2 { font-size: 6.2em; top: 47.5%; }
       .role { font-size: 4.4em; top: 58.5%; }
-      .links { font-size: 4em; bottom: 4.5%; left: 3.5%; right: 3.5%; }
-      .links ul { column-gap: 1.4em; row-gap: .1em; }
-      .links a { padding: .4em 0; }
+      .links, .craft { font-size: 4em; bottom: 4.5%; left: 3.5%; right: 3.5%; }
+      .links ul, .craft { column-gap: 1.4em; row-gap: .1em; }
+      .links a, .craft li { padding: .4em 0; }
       .subtitle { bottom: 18px; font-size: 15px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       :root { --max: 6deg; }
-      .card { transition: none; }
+      .stage { transition: none; }
+      .turn svg { transition: none; }
       .subtitle span { transition: none; }
     }
   </style>
   <noscript>
-    <style>.card { opacity: 1; } .subtitle { display: none; }</style>
+    <!-- No script, no turning: the back lies under the front as a second card -->
+    <style>
+      .stage { opacity: 1; }
+      .wrap { margin-bottom: calc(var(--w) * 4 / 7 + 16px); cursor: auto; }
+      .back { top: calc(100% + 16px); bottom: calc(-100% - 16px); transform: translateZ(calc(var(--th) / 2)); box-shadow: 0 14px 36px rgba(0, 0, 0, .55); }
+      .subtitle { display: none; }
+    </style>
   </noscript>
 </head>
 <body>
   <div class="scene">
     <div class="light" aria-hidden="true"></div>
-    <main class="wrap">
-      <div class="shadow" aria-hidden="true"></div>
-      <div class="card">
-        <div class="edge" aria-hidden="true"></div>
-        <article class="face">
-          <svg class="watermark" viewBox="0 0 200 210" aria-hidden="true" focusable="false">
-            <defs>
-              <g id="cat">
-                <path class="tail" d="M156 160 C 194 162 198 198 150 195 C 130 194 118 190 104 188" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"/>
-                <ellipse cx="112" cy="138" rx="52" ry="46"/>
-                <ellipse cx="84" cy="106" rx="28" ry="30"/>
-                <rect x="63" y="128" width="25" height="56" rx="11"/>
-                <circle cx="70" cy="62" r="27"/>
-                <path d="M47 47 L39 12 L66 35 Z"/>
-                <path d="M93 47 L101 12 L74 35 Z"/>
-              </g>
-            </defs>
-            <use href="#cat" class="wm-shade" x="1.6" y="1.6"/>
-            <use href="#cat" class="wm-light"/>
-          </svg>
-          <a class="email" href="#" data-u="richardkollar" data-d="protonmail.com" aria-label="Email Richard"></a>
-          <p class="dept">Software Architecture<br>&amp;<br>Engineering</p>
-          <h1>Richard Kollar</h1>
-          <p class="role">Software Architect</p>
-          <nav class="links" aria-label="Contact">
-            <ul>
-              <li><a href="https://github.com/Shawoll" rel="me">GitHub Shawoll</a></li>
-              <li><a href="https://www.linkedin.com/in/richard-koll%C3%A1r-704267132/" rel="me">LinkedIn Richard Kollar</a></li>
-              <li><a href="https://x.com/Richard_Kollar" rel="me">X @Richard_Kollar</a></li>
-              <li><a href="https://ko-fi.com/r1chard" target="_blank" rel="noopener">Ko-fi.com/r1chard</a></li>
+    <main class="stage">
+      <div class="wrap">
+        <div class="shadow" aria-hidden="true"></div>
+        <div class="card">
+          <div class="edge" aria-hidden="true"></div>
+          <div class="rim" aria-hidden="true"></div>
+          <div class="rim" aria-hidden="true"></div>
+          <article class="face front">
+            <svg class="watermark" viewBox="0 0 200 210" aria-hidden="true" focusable="false">
+              <defs>
+                <g id="cat">
+                  <path class="tail" d="M156 160 C 194 162 198 198 150 195 C 130 194 118 190 104 188" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"/>
+                  <ellipse cx="112" cy="138" rx="52" ry="46"/>
+                  <ellipse cx="84" cy="106" rx="28" ry="30"/>
+                  <rect x="63" y="128" width="25" height="56" rx="11"/>
+                  <circle cx="70" cy="62" r="27"/>
+                  <path d="M47 47 L39 12 L66 35 Z"/>
+                  <path d="M93 47 L101 12 L74 35 Z"/>
+                </g>
+              </defs>
+              <use href="#cat" class="wm-shade" x="1.6" y="1.6"/>
+              <use href="#cat" class="wm-light"/>
+            </svg>
+            <a class="email" href="#" data-u="richardkollar" data-d="protonmail.com" aria-label="Email Richard"></a>
+            <p class="dept">Software Architecture<br>&amp;<br>Engineering</p>
+            <h1>Richard Kollar</h1>
+            <p class="role">Software Architect</p>
+            <nav class="links" aria-label="Contact">
+              <ul>
+                <li><a href="https://github.com/Shawoll" rel="me">GitHub Shawoll</a></li>
+                <li><a href="https://www.linkedin.com/in/richard-koll%C3%A1r-704267132/" rel="me">LinkedIn Richard Kollar</a></li>
+                <li><a href="https://x.com/Richard_Kollar" rel="me">X @Richard_Kollar</a></li>
+                <li><a href="https://ko-fi.com/r1chard" target="_blank" rel="noopener">Ko-fi.com/r1chard</a></li>
+              </ul>
+            </nav>
+            <div class="pearl" aria-hidden="true"></div>
+            <div class="sheen" aria-hidden="true"></div>
+          </article>
+          <article class="face back">
+            <ul class="langs">
+              <li>Java</li>
+              <li>C#</li>
+              <li>PHP</li>
+              <li>JavaScript</li>
             </ul>
-          </nav>
-          <div class="pearl" aria-hidden="true"></div>
-          <div class="sheen" aria-hidden="true"></div>
-        </article>
+            <p class="dept">Mergers, Acquisitions<br>&amp;<br>Merge Conflicts</p>
+            <h2>Software Architecture</h2>
+            <p class="role">System Design</p>
+            <ul class="craft">
+              <li>Object-Oriented &amp; Functional Programming</li>
+              <li>Various Frameworks</li>
+            </ul>
+            <div class="pearl" aria-hidden="true"></div>
+            <div class="sheen" aria-hidden="true"></div>
+          </article>
+        </div>
       </div>
+      <button class="turn" type="button" hidden>
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M12.33 6.5A5 5 0 1 1 8 4M6 2l2 2-2 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Turn over</span>
+      </button>
     </main>
     <p class="subtitle" aria-hidden="true"><span></span><span></span></p>
   </div>
@@ -401,10 +540,14 @@
     (function () {
       "use strict";
       var scene = document.querySelector(".scene");
+      var stage = document.querySelector(".stage");
       var wrap = document.querySelector(".wrap");
       var card = document.querySelector(".card");
+      var button = document.querySelector(".turn");
+      var label = button.querySelector("span");
       var subtitle = document.querySelector(".subtitle");
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+      var deep = location.hash === "#skills";                    // a link straight to the back
 
       // Email: assembled here so the address never appears in the source
       var email = document.querySelector(".email");
@@ -430,15 +573,21 @@
 
       var sx = new Spring(0, 14, 1), sy = new Spring(0, 14, 1);   // pressure point on the card, -1..1
       var lx = new Spring(0, 7, 1), ly = new Spring(0, 7, 1);     // spotlight on the table, -1..1
+      var fl = new Spring(0, 10, .75);                            // the turn in half-turns: even shows the front, odd the back
       var state = "rest";                                         // rest | idle | pointer | gyro
       var raf = 0, running = false, last = 0;
       var lastMove = -1e9, idleTimer = 0, settledOnce = false;
-      var hover = false, pressing = false, rect = null;
+      var hover = false, pressing = false, rect = null, maxTilt = 0;
       var gyroLive = false, gyroAsked = false, ref = null;
+      var side = 0, flipped = false, tap = null, shakeUntil = 0;  // side: the face toward the viewer, 1 is the back
       var written = {};
 
       function clamp(v) { return v < -1 ? -1 : v > 1 ? 1 : v; }
-      function measure() { rect = wrap.getBoundingClientRect(); }
+      function odd(n) { return Math.abs(n % 2) === 1; }
+      function measure() {
+        rect = wrap.getBoundingClientRect();
+        maxTilt = (parseFloat(getComputedStyle(wrap).getPropertyValue("--max")) || 0) * Math.PI / 180;
+      }
       function write(el, name, value) {
         var v = value.toFixed(4);
         if (written[name] === v) { return; }
@@ -465,6 +614,20 @@
         start();
       }
 
+      // --- The turn: one half-turn per tap, the button turns it over and back ---
+      function labelTurn() {
+        var back = odd(fl.t);
+        label.textContent = back ? "Turn back" : "Turn over";
+        button.classList.toggle("is-back", back);
+      }
+      function turn(dir) {
+        if (fl.settled()) { var n = fl.t - (odd(fl.t) ? 1 : 0); fl.x -= n; fl.t -= n; }
+        fl.t += dir;
+        labelTurn();
+        if (reduce.matches) { fl.x = fl.t; fl.v = 0; }
+        start();
+      }
+
       function frame(now) {
         raf = 0;
         if (!running) { return; }
@@ -475,17 +638,36 @@
           sx.t = .3 * Math.sin(t / 2.7);
           sy.t = .3 * Math.sin(t / 3.9 + 1);
         }
+        if (now < shakeUntil) {                                   // Bateman's hands: uneven kicks near 9 Hz, swelling and fading
+          var e = Math.sin(Math.PI * (shakeUntil - now) / 1000) * dt;
+          sx.v += e * Math.sin(now * .058) * (180 + Math.random() * 160);
+          sy.v += e * Math.sin(now * .047) * (140 + Math.random() * 120);
+        }
         if (now - lastMove > 2500) { lx.t = sx.x * .6; ly.t = sy.x * .6; }
-        sx.step(dt); sy.step(dt); lx.step(dt); ly.step(dt);
+        sx.step(dt); sy.step(dt); lx.step(dt); ly.step(dt); fl.step(dt);
+        if (fl.settled()) { fl.x = fl.t; fl.v = 0; }
         var tilt = Math.min(1, Math.sqrt(sx.x * sx.x + sy.x * sy.x));
+        var a = fl.x * Math.PI, fs = Math.sin(a);
         write(wrap, "--mx", sx.x);
         write(wrap, "--my", sy.x);
         write(wrap, "--tilt", tilt);
+        write(wrap, "--fl", fl.x);
+        write(wrap, "--fc", Math.cos(a));
+        write(wrap, "--fs", fs);
+        write(wrap, "--lift", Math.abs(fs));
         write(scene, "--lx", lx.x);
         write(scene, "--ly", ly.x);
-        if (tilt > .85) { say(3); } else if (tilt > .5) { say(2); }
-        if (state === "rest" && sx.settled() && sy.settled() && lx.settled() && ly.settled()) {
-          if (!settledOnce) { settledOnce = true; tracking(); say(0); rest(); }
+        // Swap the faces when the card is edge-on to the viewer, tilt included
+        var shown = Math.cos(a + sx.x * maxTilt) < 0 ? 1 : 0;
+        if (shown !== side) {
+          side = shown;
+          card.dataset.side = side ? "back" : "front";
+          say("thick");
+          if (side) { flipped = true; say("punch"); }
+        }
+        if (tilt > .85 && !side) { say("mark"); } else if (tilt > .5) { say("thick"); }
+        if (state === "rest" && sx.settled() && sy.settled() && lx.settled() && ly.settled() && fl.settled() && now >= shakeUntil) {
+          if (!settledOnce) { settledOnce = true; tracking(); say(deep ? "punch" : "intro"); rest(); }
           running = false;
           return;
         }
@@ -500,7 +682,7 @@
         state = "pointer";
         tracking();
         clearTimeout(idleTimer);
-        say(1);
+        say("color");
         start();
       }
       wrap.addEventListener("pointerenter", function (e) {
@@ -508,6 +690,7 @@
         if (e.pointerType === "mouse") { hover = true; press(e); }
       });
       wrap.addEventListener("pointerdown", function (e) {
+        tap = e.isPrimary && e.button === 0 && !e.target.closest("a") ? { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() } : null;
         if (e.pointerType !== "mouse") { pressing = true; press(e); }
       });
       wrap.addEventListener("pointermove", function (e) {
@@ -519,9 +702,18 @@
         if (gyroLive) { state = "gyro"; tracking(); return; }
         rest();
       }
+      // A tap turns the card, pushing away the half it lands on; a press-and-hold only tilts it
+      wrap.addEventListener("pointerup", function (e) {
+        var t = tap;
+        var tapped = !!t && t.id === e.pointerId && performance.now() - t.t < 500 && Math.hypot(e.clientX - t.x, e.clientY - t.y) <= 10;
+        tap = null;
+        if (tapped) { turn(t.x < rect.left + rect.width / 2 ? -1 : 1); }
+        if (e.pointerType !== "mouse" && !e.target.closest("a") && (!tapped || !odd(fl.t))) { askGyro(); }
+        release(e);
+      });
       wrap.addEventListener("pointerleave", release);
-      wrap.addEventListener("pointerup", release);
-      wrap.addEventListener("pointercancel", release);
+      wrap.addEventListener("pointercancel", function (e) { tap = null; release(e); });
+      button.addEventListener("click", function () { turn(odd(fl.t) ? -1 : 1); });
       document.addEventListener("pointermove", function (e) {
         lastMove = performance.now();
         lx.t = clamp((e.clientX / window.innerWidth) * 2 - 1);
@@ -533,7 +725,7 @@
       window.addEventListener("resize", measure);
       window.addEventListener("scroll", measure, { passive: true });
 
-      // --- Gyroscope: the card lies on the phone; iOS asks on the first tap on the card ---
+      // --- Gyroscope: the card lies on the phone; iOS asks on a touch on the card ---
       function orient(e) {
         if (e.beta == null || e.gamma == null) { return; }
         var now = performance.now();
@@ -561,74 +753,110 @@
       function listenGyro() { window.addEventListener("deviceorientation", orient); }
       var needsAsk = "DeviceOrientationEvent" in window && typeof DeviceOrientationEvent.requestPermission === "function";
       if ("DeviceOrientationEvent" in window && !needsAsk && !reduce.matches) { listenGyro(); }
-      if (needsAsk) {
-        wrap.addEventListener("pointerup", function (e) {
-          if (gyroAsked || reduce.matches || e.pointerType === "mouse" || e.target.closest("a")) { return; }
-          gyroAsked = true;
-          DeviceOrientationEvent.requestPermission().then(function (r) {
-            if (r === "granted") { listenGyro(); }
-          }).catch(function () {});
-        });
+      // Asked on a touch that is not a tap, or on the tap that turns the card back: never over the first reveal
+      function askGyro() {
+        if (!needsAsk || gyroAsked || reduce.matches) { return; }
+        gyroAsked = true;
+        DeviceOrientationEvent.requestPermission().then(function (r) {
+          if (r === "granted") { listenGyro(); }
+        }).catch(function () {});
       }
 
-      // --- Subtitles: each line once, in order, never less than 1.8 s apart ---
-      var lines = [
-        "Let's see Richard Kollar's card.",
-        "Look at that subtle off-white coloring.",
-        "The tasteful thickness of it.",
-        "Oh my God. It even has a watermark.",
-        "Is something wrong, partner? You're sweating."
-      ];
+      // --- Subtitles: each line once, after the lines it needs, never less than 1.8 s apart ---
+      // after: said first; ok: checked when queued and again when due, a line that fails then is dropped;
+      // then: [line, ms] after this one shows; go: runs as it shows
+      var script = {
+        intro: { t: "Let's see Richard Kollar's card." },
+        color: { t: "Look at that subtle off-white coloring.", after: "intro" },
+        thick: { t: "The tasteful thickness of it.", after: "color" },
+        mark: { t: "Oh my God. It even has a watermark.", after: "thick", ok: function () { return !side; }, then: ["tease", 5000] },
+        tease: { t: "But wait. You ain't seen nothin' yet.", ok: function () { return !flipped && !fl.t; } },
+        back: { t: "He had the back printed, too.", after: "intro" },
+        punch: { t: "Jesus. He even does functional programming.", after: "back", then: ["sweat", 4000] },
+        sweat: { t: "Is something wrong, partner? You're sweating.", go: tremble }
+      };
       var spans = subtitle.querySelectorAll("span");
-      var said = [], queue = [], cur = 0, shownAt = -1e9, pumpTimer = 0, hideTimer = 0;
-      function say(i) {
-        for (var j = 0; j <= i; j += 1) {
-          if (!said[j]) { said[j] = true; queue.push(j); }
-        }
+      var said = {}, queue = [], cur = 0, shownAt = -1e9, pumpTimer = 0, hideTimer = 0;
+      function due(key) { return !script[key].ok || script[key].ok(); }
+      function say(key) {
+        if (said[key] || !due(key)) { return; }
+        if (script[key].after) { say(script[key].after); }
+        said[key] = true;
+        queue.push(key);
         pump();
       }
       function pump() {
         clearTimeout(pumpTimer);
-        if (!queue.length) { return; }
         var wait = shownAt + 1800 - performance.now();
-        if (wait > 0) { pumpTimer = setTimeout(pump, wait); return; }
-        var i = queue.shift();
+        if (wait > 0) { if (queue.length) { pumpTimer = setTimeout(pump, wait); } return; }
+        while (queue.length && !due(queue[0])) { said[queue.shift()] = false; }
+        if (!queue.length) { return; }
+        var line = script[queue.shift()];
         var next = spans[1 - cur];
-        next.textContent = lines[i];
+        next.textContent = line.t;
         next.classList.add("is-on");
         spans[cur].classList.remove("is-on");
         cur = 1 - cur;
         shownAt = performance.now();
         clearTimeout(hideTimer);
         hideTimer = setTimeout(function () { next.classList.remove("is-on"); }, 3800);
-        if (i === 3) { setTimeout(function () { say(4); }, 4000); }
+        if (line.then) { setTimeout(function () { say(line.then[0]); }, line.then[1]); }
+        if (line.go) { line.go(); }
         if (queue.length) { pumpTimer = setTimeout(pump, 1800); }
+      }
+      // Bateman's hands: the card trembles for a second
+      function tremble() {
+        if (reduce.matches) { return; }
+        shakeUntil = performance.now() + 1000;
+        start();
       }
 
       // --- Housekeeping ---
+      var title = document.title, titleTimer = 0;
       document.addEventListener("visibilitychange", function () {
-        if (document.hidden) { running = false; }
-        else { start(); }
+        clearTimeout(titleTimer);
+        if (document.hidden) {
+          running = false;
+          // late enough that a page left in the same tab never puts this title in the history
+          titleTimer = setTimeout(function () {
+            if (document.hidden) { document.title = "I have to return some videotapes."; }
+          }, 250);
+        } else {
+          document.title = title;
+          start();
+        }
       });
       reduce.addEventListener("change", function () {
+        measure();
         if (reduce.matches) {
           window.removeEventListener("deviceorientation", orient);
           gyroLive = false;
+          fl.x = fl.t; fl.v = 0; shakeUntil = 0;
           if (state === "idle" || state === "gyro") { rest(); }
+          start();
         } else if (state === "rest") { rest(); }
       });
 
-      // --- Entrance: the card settles onto the table ---
+      // --- Entrance: the card settles onto the table, at /#skills with its back up ---
       measure();
+      if (deep) { fl.x = fl.t = 1; side = 1; flipped = true; }
+      card.dataset.side = side ? "back" : "front";
+      labelTurn();
+      button.hidden = false;
       if (!reduce.matches) {
         sx.x = -.55; sy.x = -.42;
         sx.tune(5, .9); sy.tune(5, .9);
       }
-      card.classList.add("is-in");
+      stage.classList.add("is-in");
       start();
+      // a link to /#skills from a page that is already open does not reload it
+      window.addEventListener("hashchange", function () {
+        if (location.hash === "#skills" && !odd(fl.t)) { turn(1); }
+      });
 
       console.log(
-        "Hi. One HTML file, no build step, one business card.\n" +
+        "There is an idea of a Richard Kollar. Some kind of abstraction.\n" +
+        "Hi. One HTML file, no build step, one business card, two sides.\n" +
         "The previous page lives on at /classic/.\n" +
         "Source: https://github.com/Shawoll/richardkollar"
       );
