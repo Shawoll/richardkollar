@@ -17,7 +17,7 @@
   <meta property="og:image" content="https://richardkollar.sk/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="An off-white business card on a dark table: Richard Kollar, Software Architect, Kollar &amp; Kollar">
+  <meta property="og:image:alt" content="An off-white business card on a dark table: Richard Kollar, Software Architect">
   <meta property="profile:first_name" content="Richard">
   <meta property="profile:last_name" content="Kollar">
   <meta name="twitter:card" content="summary_large_image">
@@ -25,7 +25,7 @@
   <meta name="twitter:title" content="Richard Kollar">
   <meta name="twitter:description" content="Software Architecture &amp; Engineering">
   <meta name="twitter:image" content="https://richardkollar.sk/assets/og.png">
-  <meta name="twitter:image:alt" content="An off-white business card on a dark table: Richard Kollar, Software Architect, Kollar &amp; Kollar">
+  <meta name="twitter:image:alt" content="An off-white business card on a dark table: Richard Kollar, Software Architect">
 
   <link rel="icon" href="favicon.ico" sizes="any">
 
@@ -202,56 +202,41 @@
       top: 7.5%;
       left: 4.5%;
       padding: .6em .5em .6em 0;
-      font-size: 3.9em;
+      font-size: 3.7em;
       font-weight: 300;
       text-decoration: none;
       color: inherit;
     }
-    .firm {
+    .dept {
       top: 21%;
       right: 4.5%;
-      text-align: right;
-    }
-    .firm b {
-      display: block;
-      font-size: 5em;
-      font-weight: 700;
-      letter-spacing: .06em;
-    }
-    .firm span {
-      display: block;
-      margin-top: .2em;
-      font-size: 3.6em;
+      font-size: 3.4em;
       font-weight: 300;
     }
     h1 {
-      top: 51.5%;
-      left: 0;
-      right: 0;
-      font-size: 6.6em;
+      top: 46%;
+      left: 4.5%;
+      font-size: 5.8em;
       font-weight: 700;
       letter-spacing: .06em;
-      text-align: center;
     }
     .role {
-      top: 61.5%;
-      left: 0;
-      right: 0;
-      font-size: 4.6em;
+      top: 57%;
+      left: 4.5%;
+      font-size: 4em;
       font-weight: 700;
-      text-align: center;
     }
     .links {
       left: 4.5%;
       right: 4.5%;
       bottom: 5.5%;
-      font-size: 3.6em;
+      font-size: 3.4em;
       font-weight: 300;
     }
     .links ul {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start;
       column-gap: 2.6em;
       row-gap: .35em;
       margin: 0;
@@ -281,7 +266,7 @@
     /* The watermark: only there when the card is tilted toward the light */
     .watermark {
       top: 12%;
-      left: 50%;
+      left: 62%;
       height: 76%;
       width: auto;
       transform: translateX(-50%);
@@ -343,13 +328,11 @@
     /* Phones: the card stays a landscape 7:4 card at about real size, small lines a touch larger */
     @media (max-width: 599px) {
       :root { --max: 10deg; }
-      .email { font-size: 5em; top: 6.5%; }
-      .firm { top: 22%; }
-      .firm b { font-size: 5.3em; }
-      .firm span { font-size: 4.2em; margin-top: .2em; }
-      h1 { font-size: 7em; top: 50.5%; }
-      .role { font-size: 4.9em; top: 61%; }
-      .links { font-size: 4.15em; bottom: 4.5%; left: 3.5%; right: 3.5%; }
+      .email { font-size: 4.8em; top: 6.5%; }
+      .dept { font-size: 4em; top: 21%; }
+      h1 { font-size: 6.2em; top: 45%; }
+      .role { font-size: 4.4em; top: 57%; }
+      .links { font-size: 4em; bottom: 4.5%; left: 4.5%; right: 3.5%; }
       .links ul { column-gap: 1.4em; row-gap: .1em; }
       .links a { padding: .4em 0; }
       .subtitle { bottom: 18px; font-size: 15px; }
@@ -389,7 +372,7 @@
             <use href="#cat" class="wm-light"/>
           </svg>
           <a class="email" href="#" data-u="richardkollar" data-d="protonmail.com" aria-label="Email Richard"></a>
-          <p class="firm"><b>Kollar &amp; Kollar</b><span>Software Architecture and Engineering</span></p>
+          <p class="dept">Software Architecture and Engineering</p>
           <h1>Richard Kollar</h1>
           <p class="role">Software Architect</p>
           <nav class="links" aria-label="Contact">
@@ -584,11 +567,11 @@
 
       // --- Subtitles: each line once, in order, never less than 1.8 s apart ---
       var lines = [
-        "Let's see Paul Allen's card.",
+        "Let's see Richard Kollar's card.",
         "Look at that subtle off-white coloring.",
         "The tasteful thickness of it.",
         "Oh my God. It even has a watermark.",
-        "Is something wrong, Patrick? You're sweating."
+        "Is something wrong, partner? You're sweating."
       ];
       var spans = subtitle.querySelectorAll("span");
       var said = [], queue = [], cur = 0, shownAt = -1e9, pumpTimer = 0, hideTimer = 0;
