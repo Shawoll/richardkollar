@@ -725,11 +725,12 @@
       window.addEventListener("resize", measure);
       window.addEventListener("scroll", measure, { passive: true });
 
-      // --- Gyroscope: the card lies on the phone; iOS asks on a touch on the card ---
+      // --- Gyroscope: the card lies on the phone, a flick of the wrist turns it over; iOS asks on a touch on the card ---
       function orient(e) {
         if (e.beta == null || e.gamma == null) { return; }
         var now = performance.now();
         var angle = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+        flick(e, now, angle);
         if (!ref) { ref = { b: e.beta, g: e.gamma, t: now }; }
         var k = 1 - Math.exp(-(now - ref.t) / 6000);     // slow re-centre on how the phone is held
         ref.b += (e.beta - ref.b) * k;
@@ -750,9 +751,40 @@
         sy.t = clamp(ey / 22);
         start();
       }
+      // The flick: how far the phone turned about the screen's vertical axis between two readings, taken from
+      // rotation matrices (device to earth, Rz(alpha) Rx(beta) Ry(gamma)), which do not jump the way the angles can
+      var prevR = null, prevT = 0, twist = 0, flickUntil = 0;
+      function matrix(e) {
+        var d = Math.PI / 180;
+        var ca = Math.cos(e.alpha * d), sa = Math.sin(e.alpha * d), cb = Math.cos(e.beta * d), sb = Math.sin(e.beta * d);
+        var cg = Math.cos(e.gamma * d), sg = Math.sin(e.gamma * d);
+        return [ca * cg - sa * sb * sg, -sa * cb, ca * sg + sa * sb * cg,
+                sa * cg + ca * sb * sg, ca * cb, sa * sg - ca * sb * cg,
+                -cb * sg, sb, cb * cg];
+      }
+      function flick(e, now, angle) {
+        var p = prevR, r = e.alpha == null ? null : matrix(e), dt = (now - prevT) / 1000;
+        prevR = r; prevT = now;
+        if (!p || !r || dt <= 0 || dt > .1) { twist = 0; return; }
+        // the turn between the readings about the device's x and y axes (sine of the angle), then about the screen's vertical
+        var x = (p[2] * r[1] + p[5] * r[4] + p[8] * r[7] - p[1] * r[2] - p[4] * r[5] - p[7] * r[8]) / 2;
+        var y = (p[0] * r[2] + p[3] * r[5] + p[6] * r[8] - p[2] * r[0] - p[5] * r[3] - p[8] * r[6]) / 2;
+        var s = angle === 90 ? x : angle === 180 || angle === -180 ? -y : angle === 270 || angle === -90 ? -x : y;
+        if (now < flickUntil || pressing || Math.abs(s) > .7) { twist = 0; return; }
+        // leaky sum in degrees: a quick twist builds up past 20, a slow turn or a bump does not
+        twist = twist * Math.exp(-dt / .08) + Math.asin(s) * 180 / Math.PI;
+        if (Math.abs(twist) > 20) { turn(twist > 0 ? 1 : -1); twist = 0; flickUntil = now + 700; }
+      }
       function listenGyro() { window.addEventListener("deviceorientation", orient); }
       var needsAsk = "DeviceOrientationEvent" in window && typeof DeviceOrientationEvent.requestPermission === "function";
       if ("DeviceOrientationEvent" in window && !needsAsk && !reduce.matches) { listenGyro(); }
+      // Chrome has requestPermission too and answers at once; so does Safari for a site allowed before.
+      // Safari's first time needs a touch, so it rejects here and the touch below asks.
+      if (needsAsk && !reduce.matches) {
+        DeviceOrientationEvent.requestPermission().then(function (r) {
+          if (r === "granted") { gyroAsked = true; listenGyro(); }
+        }).catch(function () {});
+      }
       // Asked on a touch that is not a tap, or on the tap that turns the card back: never over the first reveal
       function askGyro() {
         if (!needsAsk || gyroAsked || reduce.matches) { return; }
